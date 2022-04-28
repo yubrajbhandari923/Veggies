@@ -1,1 +1,1 @@
-web: gunicorn wsgi:application
+web: cd pythonServer && gunicorn pythonServer.wsgi:application
