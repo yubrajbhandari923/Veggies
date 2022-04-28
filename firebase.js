@@ -1,3 +1,4 @@
+//
 import firebase from 'firebase/compat/app';
 import AsyncStorage from '@react-native-community/async-storage';
 
