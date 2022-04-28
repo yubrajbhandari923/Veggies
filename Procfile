@@ -1,1 +1,1 @@
-web: gunicorn pythonServer/pythonServer.wsgi
+web: pipenv run gunicorn pythonServer/pythonServer.wsgi
