@@ -1,1 +1,1 @@
-web: gunicorn pythonServer.wsgi
+web: gunicorn pythonServer/pythonServer.wsgi
