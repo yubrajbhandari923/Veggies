@@ -1,10 +1,14 @@
-import {View, Text} from 'react-native';
-import React from 'react';
+import {View, Text, Pressable} from 'react-native';
+import React, {useContext} from 'react';
+import {AuthContext} from '../routes/AuthProvider';
 
 export default function ProfileScreen() {
+  const {logout} = useContext(AuthContext);
   return (
     <View>
-      <Text>ProfileScreen</Text>
+      <Pressable onPress={() => logout()}>
+        <Text>LOGOUT</Text>
+      </Pressable>
     </View>
   );
 }

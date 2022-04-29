@@ -25,35 +25,6 @@ export default function LoginScreen({navigation}) {
   const [email, setEmail] = useState({value: 'anup8eguy@gmail.com', error: ''});
   const [password, setPassword] = useState({value: 'Bhusal12', error: ''});
 
-  let url =
-    'https://newsapi.org/v2/everything?' +
-    'q=Apple&' +
-    'from=2022-04-28&' +
-    'sortBy=popularity&' +
-    'apiKey=4601e2dde36f4926b8de200d91e551d2';
-
-  var req = new Request(url);
-
-  fetch(req, {
-    method: 'GET',
-    headers: myHeaders,
-    mode: 'cors',
-    cache: 'default',
-  })
-    .then(function (response) {
-      console.log(response)
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      return response.blob();
-    })
-    .then(response => {
-      console.log(response);
-    })
-    .catch(e => {
-      console.log(e);
-    });
 
   const onLoginPressed = () => {
     // Just Validators for LOGIN

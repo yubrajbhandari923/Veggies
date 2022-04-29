@@ -14,6 +14,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntIcons from 'react-native-vector-icons/AntDesign';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
+import NewsModal from '../components/modals/NewsModal';
 
 export const Stack = createStackNavigator();
 
@@ -37,7 +38,9 @@ export default class AuthStack extends Component {
               cardOverlayEnabled: true,
               gestureEnabled: true,
               ...TransitionPresets.ModalPresentationIOS,
-            }}></Stack.Group>
+            }}>
+            <Stack.Screen name="NEWS_FEED-MODAL" component={NewsModal} />
+          </Stack.Group>
         </Stack.Navigator>
       </Provider>
     );
@@ -64,15 +67,6 @@ const TabNavigator = () => {
         },
       }}>
       <Stack.Screen
-        component={HomeScreen}
-        name="HOME-SCREEN"
-        options={{
-          tabBarIcon: ({color, size}) => (
-            <AntIcons name="home" color={color} size={size} />
-          ),
-        }}
-      />
-      <Stack.Screen
         component={NotificationScreen}
         name="NOTIFICATION-SCREEN"
         options={{
@@ -91,6 +85,15 @@ const TabNavigator = () => {
         options={{
           tabBarIcon: ({color, size}) => (
             <AntIcons name="message1" color={color} size={size} />
+          ),
+        }}
+      />
+      <Stack.Screen
+        component={HomeScreen}
+        name="HOME-SCREEN"
+        options={{
+          tabBarIcon: ({color, size}) => (
+            <AntIcons name="home" color={color} size={35} />
           ),
         }}
       />

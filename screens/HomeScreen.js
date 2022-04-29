@@ -1,17 +1,79 @@
-import {View, Text, Pressable} from 'react-native';
-import React, {useContext} from 'react';
-import {AuthContext} from '../routes/AuthProvider';
+import {ScrollView, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Text} from 'react-native-paper';
+import Search from '../components/Search';
+import NewsFeed, {NewsSkeleton} from '../components/NewsFeed';
 
-export default function HomeScreen() {
-  const {logout} = useContext(AuthContext);
+export default function HomeScreen({navigation}) {
+  const [isFetchingNews, setFetchingNews] = useState(true);
+
+  const [news, setNews] = useState(null);
+
+  const fetchNews = () => {
+    let url =
+      'https://newsapi.org/v2/everything?' +
+      'q=nepal&' +
+      'from=2022-04-28&' +
+      'sortBy=popularity&' +
+      'apiKey=4601e2dde36f4926b8de200d91e551d2';
+
+    var req = new Request(url);
+    fetch(req, {
+      method: 'GET',
+    })
+      .then(function (response) {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(response => {
+        setNews(response);
+        setFetchingNews(false);
+      })
+      .catch(e => {
+        if (__DEV__) console.log(e);
+      });
+  };
+
+  useEffect(() => {
+    fetchNews();
+  }, []);
   return (
-    <View>
-      <Text>HomeScreen</Text>
-      <Pressable
-        onPress={() => logout()}
-        style={{backgroundColor: 'green', height: 50, width: 300}}>
-        <Text>LOGOUT</Text>
-      </Pressable>
-    </View>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      style={{paddingVertical: 10, paddingHorizontal: 20}}
+      contentContainerStyle={{paddingVertical: 20}}>
+      <View style={{alignItems: 'center', width: '100%'}}>
+        <Text style={{fontSize: 25}}>VEGGIES</Text>
+      </View>
+
+      <Search />
+
+      {isFetchingNews ? (
+        <>
+          <NewsSkeleton />
+          <NewsSkeleton />
+          <NewsSkeleton />
+          <NewsSkeleton />
+        </>
+      ) : (
+        news?.articles.map((articleObject, index) => (
+          <NewsFeed
+            image={{uri: articleObject['urlToImage']}}
+            title={articleObject['title']}
+            description={articleObject['description']}
+            author={articleObject['author']}
+            date={new Date(articleObject['publishedAt'])}
+            key={articleObject['url'] + index}
+            onPress={() =>
+              navigation.navigate('NEWS_FEED-MODAL', {
+                url: articleObject['url'],
+              })
+            }
+          />
+        ))
+      )}
+    </ScrollView>
   );
 }
