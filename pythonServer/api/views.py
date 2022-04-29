@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django import http
 from django.views import View
 from django.http import HttpResponse, HttpResponseForbidden
+from django.views.decorators.csrf import csrfexempt
 
 from rest_framework.views import APIView 
 from rest_framework.response import Response
@@ -10,6 +11,8 @@ from rest_framework.response import Response
 from fb_services.profile import Profile
 from fb_services.config import *
 from fb_services.FBAPI import callNLPConfigsAPI
+
+
 
 VERIFY_TOKEN = os.environ["VERIFY_TOKEN"]
 
@@ -24,6 +27,7 @@ class WebHookView(View):
             return HttpResponse(challenge) 
         return HttpResponseForbidden()
 
+    @csrfexempt
     def post(self,req,format=None):
         print(f"\n\n Recieved Webhook: {req.data} \n")
         
