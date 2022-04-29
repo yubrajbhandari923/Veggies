@@ -37,6 +37,7 @@ class ProfileView(APIView):
     def get(self, req, format=None):
         """/profile?  """
 
+        print(f"\n\n {req} \n\n")
         token = req.data.get('token', None)
         mode = req.data.get('mode', None)
 

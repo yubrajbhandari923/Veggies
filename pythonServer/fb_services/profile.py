@@ -3,8 +3,8 @@ from .config import *
 
 class Profile:
     def setWebhook(self):
-        callSubscriptionAPI()
-        callSubscribedApps()
+        print(callSubscriptionAPI())
+        print(callSubscribedApps())
 
     @property
     def getGetStarted(self):
@@ -58,7 +58,7 @@ class Profile:
             "persistent_menu": self.getPersistanceMenu
         }
 
-        callMessengerProfileAPI(profilePayload)
+        print(callMessengerProfileAPI(profilePayload))
 
     def setPersonas(self):
         newPersonas = NEW_PERSONAS
