@@ -46,22 +46,28 @@ class ProfileView(APIView):
         if mode and token:
             if token == os.environ.get("VERIFY_TOKEN"):
                 if mode == "webhook" or mode == "all":
-                   profile.setWebHook()
+                   profile.setWebhook()
+                   print("\n\n Web Hook Set \n\n")
                    responseBody += f"Set App {APP_ID} set to {WEBHOOK_URL} \n"
                 if mode == "profile" or mode == "all":
                     profile.setThread()
+                    print("\n\n Profile thread Set \n\n")
                     responseBody += f"Set Messenger Profile of PAGE {PAGE_ID} \n"
                 if mode == "persona" or mode == "all":
                     profile.setPersonas()
+                    print("\n\n Set Persona \n\n")
                     responseBody += f"Set Personas for {APP_ID} \n"
                 if mode == "nlp" or mode == "all":
                     callNLPConfigsAPI()
+                    print("\n\n Set NLP \n\n")
                     responseBody += f"Enabled Build in NLP for {PAGE_ID} \n "
                 if mode == "domains" or mode == "all":
                     profile.setWhitelistedDomains()
+                    print("\n\n Set Domains \n\n")
                     responseBody += f"WhitListed Domains Set for {PAGE_ID} \n"
                 if mode == "private-reply":
                     profile.setPageFeedWebhook()
+                    print("\n\n Set Privaet reply \n\n")
                     responseBody += f"Set Page Body WebHook"
                 
                 return Response(responseBody, status=200)
