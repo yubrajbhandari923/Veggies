@@ -1,6 +1,8 @@
 import os
 from django.shortcuts import render
 from django import http
+from django.views import View
+from django.http import HttpResponse, HttpResponseForbidden
 
 from rest_framework.views import APIView 
 from rest_framework.response import Response
@@ -12,15 +14,15 @@ from fb_services.FBAPI import callNLPConfigsAPI
 VERIFY_TOKEN = os.environ["VERIFY_TOKEN"]
 
 
-class WebHookView(APIView):
+class WebHookView(View):
     def get(self, req, format=None):
         """Verify our webhook."""
 
         challenge = req.query_params.get('hub.challenge')
         if req.query_params.get("hub.verify_token") == VERIFY_TOKEN and req.query_params.get("hub.mode") == "subscribe":
             print(f"\n\n WEBHOOK VERIFIED: {challenge} : {req.query_params.get('hub.challenge')} \n\n")
-            return Response(challenge) 
-        return Response(status=403)
+            return HttpResponse(challenge) 
+        return HttpResponseForbidden()
 
     def post(self,req,format=None):
         print(f"\n\n Recieved Webhook: {req.data} \n")
