@@ -29,18 +29,17 @@ class WebHookView(View):
 
     @csrf_exempt
     def post(self,req,format=None):
-        print(f"\n\n Recieved Webhook: {req.data} \n")
+        print(f"\n\n Recieved Webhook: {req.POST} \n")
         
-        if req.data["object"] == "page":
+        if req.POST.get("object") == "page":
             
-            print(f"\n\n{req.data} \n\n ")
 
-            for entry in req.data["entry"]:
+            for entry in req.POST["entry"]:
                 # if "changes" in entry:
                 print(f"\n\n {entry['messaging'][0]} \n\n")
-                return Response('EVENT_RECIEVED', status=200) 
+                return HttpResponse('EVENT_RECIEVED') 
 
-        return Response(status=403)
+        return HttpResponseForbidden()
 
 class ProfileView(APIView):
     def get(self, req, format=None):
