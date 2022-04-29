@@ -10,7 +10,7 @@ def callSubscriptionAPI(customFields=None):
         fields = fields + " " + customFields
 
     params = {
-        "access_token": APP_ID | APP_SECRET,
+        "access_token": PAGE_ACCESS_TOKEN,
         "object": "page",
         "callback_url": WEBHOOK_URL,
         "verify_token": VERIFY_TOKEN,
