@@ -86,11 +86,11 @@ const Features = ({author, date}) => {
   return (
     <View style={styles.dishFeatureContainer}>
       <Chip
-        icon={() => <AntIcons name="user" size={20} />}
+        icon={() => <AntIcons name="user" size={20} color="#888"/>}
         // onPress={() => console.log('Pressed')}
         style={styles.dishFeatureBox}
         textStyle={styles.dishFeatureText}>
-        {author ? author : 'Anonymous'}
+        {author ? author?.slice(0, 15) + '..' : 'Anonymous'}
       </Chip>
 
       {/* Time */}

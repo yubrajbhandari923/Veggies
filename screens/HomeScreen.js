@@ -12,7 +12,7 @@ export default function HomeScreen({navigation}) {
 
   const [news, setNews] = useState(null);
 
-  const [query, setQuery] = useState('nepal');
+  const [query, setQuery] = useState('');
   // If true,then only the search results are displayed
   const [isSearch, setSearch] = useState(false);
 
