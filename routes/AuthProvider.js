@@ -12,6 +12,8 @@ export default class AuthProvider extends React.Component {
       // Stores the user object from firebase
       user: null,
 
+      firstNews: null,
+
       // Stores the message object that is displayed in snackbar
       message: {
         error: false,
@@ -35,6 +37,9 @@ export default class AuthProvider extends React.Component {
           setUser: userObj => this.setState({user: userObj}),
 
           whichProcessIsHappenningNow: this.state.whichProcessIsHappenningNow,
+
+          firstNews: this.state.firstNews,
+          setFirstNews: newsObj => this.setState({firstNews: newsObj}),
 
           // It stores the message that is displayed in snackbar
           message: this.state.message,
@@ -98,6 +103,32 @@ export default class AuthProvider extends React.Component {
                   console.log(e);
                 }
               });
+          },
+
+          search: (articleArray, query) => {
+            // if the user submits an empty string, return
+            if (query?.length == 0 || !query) {
+              return;
+            }
+
+            // First we pick up article array
+            // Then enter in every article object
+            // Then in every article we check if the query matches with author, description,content or title.
+            // that means we only search in four places i.e title, description,author and content
+            // Then We store the array of objects that pass the test in variable below
+
+            let queryPassedObjects = articleArray.filter(
+              (currentObj, index) => {
+                return (
+                  currentObj?.title?.search(RegExp(query, 'gi')) != -1 ||
+                  currentObj?.description?.search(RegExp(query, 'gi')) != -1 ||
+                  currentObj?.author?.search(RegExp(query, 'gi')) != -1 ||
+                  currentObj?.content?.search(RegExp(query, 'gi')) != -1
+                );
+              },
+            );
+
+            return queryPassedObjects;
           },
         }}>
         {this.props.children}

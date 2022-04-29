@@ -1,13 +1,25 @@
 import {ScrollView, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {Text} from 'react-native-paper';
 import Search from '../components/Search';
 import NewsFeed, {NewsSkeleton} from '../components/NewsFeed';
+import {AuthContext} from '../routes/AuthProvider';
 
 export default function HomeScreen({navigation}) {
+  const {search, firstNews, setFirstNews} = useContext(AuthContext);
+
   const [isFetchingNews, setFetchingNews] = useState(true);
 
   const [news, setNews] = useState(null);
+
+  const [query, setQuery] = useState('nepal');
+  // If true,then only the search results are displayed
+  const [isSearch, setSearch] = useState(false);
+
+  const onQueryChange = query => {
+    setSearch(query.length <= 0 ? false : true);
+    setQuery(query);
+  };
 
   const fetchNews = () => {
     let url =
@@ -29,6 +41,7 @@ export default function HomeScreen({navigation}) {
       })
       .then(response => {
         setNews(response);
+        setFirstNews(response);
         setFetchingNews(false);
       })
       .catch(e => {
@@ -39,6 +52,16 @@ export default function HomeScreen({navigation}) {
   useEffect(() => {
     fetchNews();
   }, []);
+
+  useEffect(() => {
+    // set
+    if (isSearch) {
+      searchResult = search(firstNews.articles, query);
+    }
+    isSearch ? setNews({articles: searchResult}) : fetchNews();
+
+    //
+  }, [query]);
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -48,7 +71,12 @@ export default function HomeScreen({navigation}) {
         <Text style={{fontSize: 25}}>VEGGIES</Text>
       </View>
 
-      <Search />
+      <Search
+        query={query}
+        setQuery={onQueryChange}
+        // search={onSearch}
+        // news={news}
+      />
 
       {isFetchingNews ? (
         <>
