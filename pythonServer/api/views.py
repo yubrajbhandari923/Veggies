@@ -5,6 +5,9 @@ from django import http
 from rest_framework.views import APIView 
 from rest_framework.response import Response
 
+from fb_services.profile import Profile
+from fb_services.config import *
+from fb_services.FBAPI import callNLPConfigsAPI
 
 VERIFY_TOKEN = os.environ["VERIFY_TOKEN"]
 
@@ -29,3 +32,37 @@ class WebHookView(APIView):
                 return Response('EVENT_RECIEVED', status=200) 
 
         return Response(status=400)
+
+class ProfileView(APIView):
+    def get(self, req, format=None):
+        """/profile?  """
+
+        token = req.data.get('token', None)
+        mode = req.data.get('mode', None)
+
+        profile = Profile()
+        responseBody = ""
+        if mode and token:
+            if token == os.environ.get("VERIFY_TOKEN"):
+                if mode == "webhook" or mode == "all":
+                   profile.setWebHook()
+                   responseBody += f"Set App {APP_ID} set to {WEBHOOK_URL} \n"
+                if mode == "profile" or mode == "all":
+                    profile.setThread()
+                    responseBody += f"Set Messenger Profile of PAGE {PAGE_ID} \n"
+                if mode == "persona" or mode == "all":
+                    profile.setPersonas()
+                    responseBody += f"Set Personas for {APP_ID} \n"
+                if mode == "nlp" or mode == "all":
+                    callNLPConfigsAPI()
+                    responseBody += f"Enabled Build in NLP for {PAGE_ID} \n "
+                if mode == "domains" or mode == "all":
+                    profile.setWhitelistedDomains()
+                    responseBody += f"WhitListed Domains Set for {PAGE_ID} \n"
+                if mode == "private-reply":
+                    profile.setPageFeedWebhook()
+                    responseBody += f"Set Page Body WebHook"
+                
+                return Response(responseBody, status=200)
+            return Response(status=403)
+        return Response(status=404)
