@@ -14,7 +14,6 @@ VERIFY_TOKEN = os.environ["VERIFY_TOKEN"]
 
 class WebHookView(APIView):
     def get(self, req, format=None):
-
         """Verify our webhook."""
         if req.query_params.get("hub.verify_token") == VERIFY_TOKEN and req.query_params.get("hub.mode") == "subscribe":
             print("\n\n WEBHOOK VERIFIED \n\n")
@@ -26,7 +25,7 @@ class WebHookView(APIView):
         
         if req.data["object"] == "page":
             
-            print(f"\n\n{res.data} \n\n ")
+            print(f"\n\n{req.data} \n\n ")
 
             for entry in req.data["entry"]:
                 # if "changes" in entry:
