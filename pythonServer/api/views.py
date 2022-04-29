@@ -18,9 +18,9 @@ class WebHookView(View):
     def get(self, req, format=None):
         """Verify our webhook."""
 
-        challenge = req.query_params.get('hub.challenge')
-        if req.query_params.get("hub.verify_token") == VERIFY_TOKEN and req.query_params.get("hub.mode") == "subscribe":
-            print(f"\n\n WEBHOOK VERIFIED: {challenge} : {req.query_params.get('hub.challenge')} \n\n")
+        challenge = req.GET.get('hub.challenge')
+        if req.GET.get("hub.verify_token") == VERIFY_TOKEN and req.GET.get("hub.mode") == "subscribe":
+            print(f"\n\n WEBHOOK VERIFIED: {challenge} : {req.GET.get('hub.challenge')} \n\n")
             return HttpResponse(challenge) 
         return HttpResponseForbidden()
 
