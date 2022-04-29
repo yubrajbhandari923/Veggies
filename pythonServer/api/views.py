@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django import http
 from django.views import View
 from django.http import HttpResponse, HttpResponseForbidden
-from django.views.decorators.csrf import csrfexempt
+from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework.views import APIView 
 from rest_framework.response import Response
@@ -27,7 +27,7 @@ class WebHookView(View):
             return HttpResponse(challenge) 
         return HttpResponseForbidden()
 
-    @csrfexempt
+    @csrf_exempt
     def post(self,req,format=None):
         print(f"\n\n Recieved Webhook: {req.data} \n")
         
