@@ -26,19 +26,21 @@ class WebHookView(APIView):
         
         if req.data["object"] == "page":
             
+            print(f"\n\n{res.data} \n\n ")
+
             for entry in req.data["entry"]:
                 # if "changes" in entry:
                 print(f"\n\n {entry['messaging'][0]} \n\n")
                 return Response('EVENT_RECIEVED', status=200) 
 
-        return Response(status=400)
+        return Response(status=403)
 
 class ProfileView(APIView):
     def get(self, req, format=None):
         """/profile?  """
 
         print(f"\n\n {req.query_params} \n\n")
-        token = req.query_params.get('token', None)
+        token = req.query_params.get('verify_token', None)
         mode = req.query_params.get('mode', None)
 
         profile = Profile()
