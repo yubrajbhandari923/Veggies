@@ -18,7 +18,7 @@ class WebHookView(APIView):
         """Verify our webhook."""
         if req.query_params.get("hub.verify_token") == VERIFY_TOKEN and req.query_params.get("hub.mode") == "subscribe":
             print("\n\n WEBHOOK VERIFIED \n\n")
-            return req.query_param.get("hub.challenge") 
+            return req.query_params.get("hub.challenge") 
         return Response(status=403)
 
     def post(self,req,format=None):
