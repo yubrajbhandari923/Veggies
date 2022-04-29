@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'api',
-    'fb_services'
+    'fb_services',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
