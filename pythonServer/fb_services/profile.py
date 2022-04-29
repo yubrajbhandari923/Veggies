@@ -1,5 +1,5 @@
-from FBAPI import *
-from config import *
+from .FBAPI import *
+from .config import *
 
 class Profile:
     def setWebhook(self):
