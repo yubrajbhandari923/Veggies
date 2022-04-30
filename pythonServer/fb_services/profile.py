@@ -10,7 +10,7 @@ class Profile:
     @property
     def getGetStarted(self):
         """ """
-        return {"payload": json.dumps(get_started_payload)}
+        return {"payload": "GET_STARTED"}
 
     @property
     def getGreeting(self):
@@ -18,7 +18,7 @@ class Profile:
         TODO: Make this function similiar to JS(original-coast-clothing demo app) to enable translations
         """
         return [
-            {"locale": "default", "text": "profile.greeting"},
+            {"locale": "default", "text": "Hello !!"},
         ]
 
     @property
@@ -29,7 +29,7 @@ class Profile:
                 "composer_input_disabled": True, # Disables Typing field
                 "call_to_actions": [
                     {
-                        "title": "menu.restart",
+                        "title": "Restart",
                         "type": "postback",
                         "payload": "GET_STARTED",
                     },

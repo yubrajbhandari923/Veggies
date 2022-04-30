@@ -121,15 +121,28 @@ class WebHookView(View):
 
         response = callSendAPI(res)
 
-        print(f"\n\n {response.status_code} : {response.text} ")
+        print(f"\nHandle Messege\n {response.status_code} : {response.text} ")
 
     def handlePostback(self, sender_psid, recieved_postback):
-        res = dict()
+        res = {  # Response Object
+            "messaging_type": "RESPONSE",
+            "recipient": {"id": str(sender_psid)},
+            "message": {},
+        }
 
         payload = recieved_postback["payload"]
 
         if payload == "yes":
             callSendAPI(reqBody)
+        if payload == "GET_STARTED" :
+            res["message"]["attachment"] = {
+                "type": "template",
+                "payload" : get_started_payload
+            }
+            response = callSendAPI(res)
+            print(f"\nHandle Postback\n {response.status_code} : {response.text} ")
+        
+
 
     def callSendAPI(self, sender_psid, response):
         pass
