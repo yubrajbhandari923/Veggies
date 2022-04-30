@@ -12,6 +12,7 @@ from fb_services.profile import Profile
 from fb_services.config import *
 from fb_services.FBAPI import callNLPConfigsAPI, callSendAPI
 
+from payloads import Welcome_payload
 
 class WebHookView(View):
     def handleMessage(self, sender_psid, recieved_message):
@@ -29,8 +30,14 @@ class WebHookView(View):
             wit_greeting = recieved_message.get("nlp").get("wit$greetings")
             
             
-
-            res["message"]["text"] = f"You send the message {recieved_message.get('text')} "
+            if wit_greeting["value"] == True or wit_greeting["confidence"] >= 0.9:
+                res["message"]["attachment"] = {
+                    "type" : "template",
+                    "payload": Welcome_payload
+                }
+                
+            
+            # res["message"]["text"] = f"You send the message {recieved_message.get('text')} "
         
         
         
@@ -69,7 +76,12 @@ class WebHookView(View):
         print(f"\n\n {response.status_code} : {response.text} ")
 
     def handlePostback(self, sender_psid, recieved_postback):
-        pass
+        res = dict()
+
+        payload = recieved_postback["payload"]
+
+        if payload == "yes":
+            callSendAPI(reqBody)
 
     def callSendAPI(self, sender_psid, response):
         pass
