@@ -5,6 +5,7 @@ import {
   View,
   Pressable,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import {Text} from 'react-native-paper';
 import Background from '../components/BackGround';
@@ -19,12 +20,16 @@ import {emailValidator, passwordValidator} from '../helpers/validators';
 import {AuthContext} from '../routes/AuthProvider';
 
 export default function LoginScreen({navigation}) {
-  const {googleLogin, login, whichProcessIsHappenningNow} =
-    useContext(AuthContext);
+  const {
+    googleLogin,
+    login,
+    whichProcessIsHappenningNow,
+    setWhichProcessIsHappenningNow,
+    setMessage,
+  } = useContext(AuthContext);
 
   const [email, setEmail] = useState({value: 'anup8eguy@gmail.com', error: ''});
   const [password, setPassword] = useState({value: 'Bhusal12', error: ''});
-
 
   const onLoginPressed = () => {
     // Just Validators for LOGIN
@@ -49,8 +54,30 @@ export default function LoginScreen({navigation}) {
       <Header>LOGIN</Header>
 
       <View style={styles.socialContainer}>
-        <SocialButtons provider="GOOGLE" onPress={() => googleLogin()} />
-        <SocialButtons provider="FACEBOOK" />
+        <SocialButtons
+          provider="GOOGLE"
+          process={whichProcessIsHappenningNow}
+          onPress={() =>
+            googleLogin()
+              .then(user => {
+                setWhichProcessIsHappenningNow(null);
+                console.log(user);
+              })
+              .catch(e => {
+                setWhichProcessIsHappenningNow(null);
+                setMessage(
+                  true,
+                  true,
+                  e.message
+                );
+                // if (__DEV__) console.log(e);
+              })
+          }
+        />
+        <SocialButtons
+          provider="FACEBOOK"
+          process={whichProcessIsHappenningNow}
+        />
       </View>
 
       <Text style={{marginTop: 10, color: theme.colors.primary}}>OR</Text>
@@ -105,7 +132,7 @@ export default function LoginScreen({navigation}) {
   );
 }
 
-const SocialButtons = ({provider, ...props}) => {
+const SocialButtons = ({provider, process, ...props}) => {
   return (
     <Pressable style={styles.socialButton} {...props}>
       <Image
@@ -123,6 +150,10 @@ const SocialButtons = ({provider, ...props}) => {
         }}>
         {provider}
       </Text>
+      {(provider == 'GOOGLE' && process == 'LOGIN-GOOGLE') ||
+      (provider == 'FACEBOOK' && process == 'LOGIN-FACEBOOK') ? (
+        <ActivityIndicator size="small" color="#ccc" />
+      ) : null}
     </Pressable>
   );
 };

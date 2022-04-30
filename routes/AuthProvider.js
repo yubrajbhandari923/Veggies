@@ -3,6 +3,7 @@ import React, {createContext} from 'react';
 import firebase, {auth} from '../firebase';
 export const AuthContext = createContext();
 import {errorCodeBasedOnFrbCode} from '../helpers/firebaseErrorCodesMessage';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 export default class AuthProvider extends React.Component {
   constructor(props) {
     super(props);
@@ -37,6 +38,8 @@ export default class AuthProvider extends React.Component {
           setUser: userObj => this.setState({user: userObj}),
 
           whichProcessIsHappenningNow: this.state.whichProcessIsHappenningNow,
+          setWhichProcessIsHappenningNow: value =>
+            this.setState({whichProcessIsHappenningNow: value}),
 
           firstNews: this.state.firstNews,
           setFirstNews: newsObj => this.setState({firstNews: newsObj}),
@@ -76,18 +79,33 @@ export default class AuthProvider extends React.Component {
               });
           },
 
-          googleLogin: () => {
-            console.log('DEVELOPMENT PHASE');
+          googleLogin: async () => {
+            this.setState({whichProcessIsHappenningNow: 'LOGIN-GOOGLE'});
+            // Get the users ID token
+
+            const {idToken} = await GoogleSignin.signIn();
+
+            // Create a Google credential with the token
+            const googleCredential =
+              firebase.auth.GoogleAuthProvider.credential(idToken);
+
+            // Sign-in the user with the credential
+            return await firebase.auth().signInWithCredential(googleCredential);
           },
 
           // Facebook Login
           facebookLogin: () => {
+            console.log(user);
             console.log('DEVELOPMENT PHASE');
           },
           // LOGOUT function
 
           logout: () => {
-            console.log('Predded');
+            console.log(this.state.user.providerData.providerId);
+            if (this.state.user.providerData.providerId == 'google.com') {
+              GoogleSignin.revokeAccess();
+              GoogleSignin.signOut();
+            }
 
             firebase
               .auth()

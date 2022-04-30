@@ -20,10 +20,14 @@ export default function ProfileScreen() {
     <View style={{...styles.container, backgroundColor: '#42af7f66'}}>
       {/*  */}
       <ImageBackground
-        source={require('../assets/images/logo.png')}
+        source={
+          user.photoURL
+            ? {uri: user.photoURL}
+            : require('../assets/images/logo.png')
+        }
         imageStyle={{resizeMode: 'cover'}}
         style={styles.imageBackground}
-        blurRadius={4}></ImageBackground>
+        blurRadius={1}></ImageBackground>
 
       <View style={styles.profileContainer}>
         <SkeletonPlaceholder />

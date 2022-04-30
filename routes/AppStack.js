@@ -51,7 +51,7 @@ export default class AuthStack extends Component {
 const TabNavigator = () => {
   return (
     <Tab.Navigator
-      initialRouteName="PROFILE-SCREEN"
+      initialRouteName="HOME-SCREEN"
       screenOptions={{
         tabBarShowLabel: false,
         headerShown: false,
@@ -66,7 +66,7 @@ const TabNavigator = () => {
           marginBottom: 10,
         },
       }}>
-      <Stack.Screen
+      <Tab.Screen
         component={NotificationScreen}
         name="NOTIFICATION-SCREEN"
         options={{
@@ -79,7 +79,7 @@ const TabNavigator = () => {
           ),
         }}
       />
-      <Stack.Screen
+      <Tab.Screen
         component={MessageScreen}
         name="MESSAGE-SCREEN"
         options={{
@@ -88,7 +88,7 @@ const TabNavigator = () => {
           ),
         }}
       />
-      <Stack.Screen
+      <Tab.Screen
         component={HomeScreen}
         name="HOME-SCREEN"
         options={{
@@ -97,7 +97,7 @@ const TabNavigator = () => {
           ),
         }}
       />
-      <Stack.Screen
+      <Tab.Screen
         component={ProductsScreen}
         name="PRODUCT-SCREEN"
         options={{
@@ -110,7 +110,7 @@ const TabNavigator = () => {
           ),
         }}
       />
-      <Stack.Screen
+      <Tab.Screen
         component={ProfileScreen}
         name="PROFILE-SCREEN"
         options={{

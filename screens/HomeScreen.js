@@ -24,7 +24,7 @@ export default function HomeScreen({navigation}) {
   const fetchNews = () => {
     let url =
       'https://newsapi.org/v2/everything?' +
-      'q=nepal&' +
+      'q=agriculture&' +
       'from=2022-04-28&' +
       'sortBy=popularity&' +
       'apiKey=4601e2dde36f4926b8de200d91e551d2';
