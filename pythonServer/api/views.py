@@ -38,21 +38,46 @@ class WebHookView(View):
                     and wit_greeting.get("value") == True
                     and wit_greeting.get("confidence") >= 0.9
                 ):
+                    # res["message"]["attachment"] = {
+                    #     "type": "template",
+                    #     "payload": {
+                    #         "template_type": "generic",
+                    #         "elements": [
+                    #             {
+                    #                 "title": "Welcome to Veggies Market",
+                    #                 "subtitle": "Connect with generic farmers in your locality.",
+                    #                 "image_url": f"{APP_URL}/static/img/welcome.jpg",
+                    #                 "buttons": [
+                    #                     {
+                    #                         "type": "postback",
+                    #                         "title": "Yes",
+                    #                         "payload": "yes",
+                    #                     }
+                    #                 ],
+                    #             }
+                    #         ],
+                    #     },
+                    # }
                     res["message"]["attachment"] = {
                         "type": "template",
-                        "payload": {  
+                        "payload": {
                             "template_type": "generic",
                             "elements": [
                                 {
-                                    "title": "Welcome to Veggies Market",
-                                    "subtitle": "Connect with generic farmers in your locality.",
-                                    "image_url": f"{APP_URL}/static/img/welcome.jpg",
+                                    "title": "Is this the right picture?",
+                                    "subtitle": "Tap a button to answer.",
+                                    "image_url": url_,
                                     "buttons": [
                                         {
                                             "type": "postback",
-                                            "title": "Yes",
+                                            "title": "Yes!",
                                             "payload": "yes",
-                                        }
+                                        },
+                                        {
+                                            "type": "postback",
+                                            "title": "No!",
+                                            "payload": "no",
+                                        },
                                     ],
                                 }
                             ],
