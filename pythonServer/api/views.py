@@ -240,14 +240,24 @@ class WebHookView(View):
                     "template_type" : "generic",
                     "elements": [{
                         "title": "Farmer 1",
-                        "subtitle": "Price: Rs100/kg"
-                        ""
+                        "subtitle": "Price: Rs100/kg",
+                        "image_url": f"{APP_URL}/static/img/farmer1.jpg",
+                        "buttons":[{ "type": "postback", "title": "Connect", "payload": "CONNECT_TO_FARMER1"  },{ "type": "postback", "title": "Order Now", "payload": "ORDER_NOW"  }]
+                    },{
+                        "title": "Farmer 2",
+                        "subtitle": "Price: Rs110/kg",
+                        "image_url": f"{APP_URL}/static/img/farmer2.jpg",
+                        "buttons":[{ "type": "postback", "title": "Connect", "payload": "CONNECT_TO_FARMER2"  },{ "type": "postback", "title": "Order Now", "payload": "ORDER_NOW"  }]
+                    }, {
+                        "title": "Farmer 3",
+                        "subtitle": "Price: Rs90/kg",
+                        "image_url": f"{APP_URL}/static/img/farmer3.jpg",
+                        "buttons":[{ "type": "postback", "title": "Connect", "payload": "CONNECT_TO_FARMER3"  },{ "type": "postback", "title": "Order Now", "payload": "ORDER_NOW"  }]
                     }]
                 }
             }
 
-    def callSendAPI(self, sender_psid, response):
-        pass
+        response = callSendAPI(res3)
 
     def get(self, req, format=None):
         """Verify our webhook."""
