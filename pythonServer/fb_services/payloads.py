@@ -7,11 +7,11 @@ get_started_payload = { # GET STARTED POSTBACK PAYLOAD
             "title" : "Welcome to Veggies Market",
             "subtitle" : "Connect with generic farmers in your locality.",
             "image_url" : f"{APP_URL}/static/img/welcome.jpg",
-            "buttons" : [{
-                "type" : "postback",
-                "title" : "Yes",
-                "payload" : "yes"
-            }]
+            # "buttons" : [{
+            #     "type" : "postback",
+            #     "title" : "Continue",
+            #     "payload" : "CONTINUE"
+            # }]
 
         }
     ]

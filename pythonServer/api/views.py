@@ -132,8 +132,8 @@ class WebHookView(View):
 
         payload = recieved_postback["payload"]
 
-        if payload == "yes":
-            callSendAPI(reqBody)
+        # if payload == "CONTI":
+            # callSendAPI(reqBody)
 
         if payload == "GET_STARTED" :
             res["message"]["attachment"] = {
@@ -150,7 +150,7 @@ class WebHookView(View):
 
             }
             res1["message"]["text"] = "Here you can order Vegetables from farmers nearby you."
-            response = callsendAPI(res1)
+            response = callSendAPI(res1)
 
             res2 ={
                             "messaging_type": "RESPONSE",
