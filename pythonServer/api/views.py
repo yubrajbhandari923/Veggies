@@ -30,11 +30,12 @@ class WebHookView(View):
     @csrf_exempt
     def post(self,req,format=None):
         print(f"\n\n Recieved Webhook: {req.body} \n")
-        
-        if False or req.body.get("object") == "page":
+
+        body = json.loads(req.body)        
+        if body.get("object") == "page":
             
 
-            for entry in req.body["entry"]:
+            for entry in body["entry"]:
                 # if "changes" in entry:
                 webhook_event = entry['messaging'][0]
                 print(f"\n\n {entry['messaging'][0]} \n\n")
