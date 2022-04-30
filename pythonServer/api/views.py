@@ -66,7 +66,7 @@ class WebHookView(View):
                                 {
                                     "title": "Is this the right picture?",
                                     "subtitle": "Tap a button to answer.",
-                                    "image_url": "veggiesserver.herokuapp.com/static/img/welcome.jpg",
+                                    "image_url": "https://www.messenger.com/messenger_media/?thread_id=102208592487070&attachment_id=1842344112642060&message_id=mid.%24cAAAGBimqpviGqljVVmAeROGSaEA8",
                                     "buttons": [
                                         {
                                             "type": "postback",
