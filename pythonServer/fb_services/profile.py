@@ -1,7 +1,7 @@
 from .FBAPI import *
 from .config import *
 from .payloads import get_started_payload
-
+import json
 class Profile:
     def setWebhook(self):
         print(callSubscriptionAPI())
@@ -10,7 +10,7 @@ class Profile:
     @property
     def getGetStarted(self):
         """ """
-        return {"payload": get_started_payload}
+        return {"payload": json.dumps(get_started_payload)}
 
     @property
     def getGreeting(self):
@@ -45,6 +45,7 @@ class Profile:
             "persistent_menu": self.getPersistanceMenu
         }
 
+        print (f"ProfilePayload : {profilePayload}")
         print(callMessengerProfileAPI(profilePayload))
 
     def setPersonas(self):
