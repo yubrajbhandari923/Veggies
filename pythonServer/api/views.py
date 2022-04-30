@@ -27,14 +27,17 @@ class WebHookView(View):
 
         if recieved_message.get("text"):
             text = recieved_message.get("text")
-            wit_greeting = recieved_message.get("nlp").get('traits').get("wit$greetings")
-            
-            
-            if wit_greeting and wit_greeting.get("value") == True and wit_greeting.get("confidence") >= 0.9:
-                res["message"]["attachment"] = {
-                    "type" : "template",
-                    "payload": get_started_payload
-                }
+            try:
+                wit_greeting = recieved_message.get("nlp").get('traits').get("wit$greetings")[0]
+                
+                
+                if wit_greeting and wit_greeting.get("value") == True and wit_greeting.get("confidence") >= 0.9:
+                    res["message"]["attachment"] = {
+                        "type" : "template",
+                        "payload": get_started_payload
+                    }
+            except Exception: 
+                res["message"]["text"] = "You are a nice lady"
                 
             
             # res["message"]["text"] = f"You send the message {recieved_message.get('text')} "
