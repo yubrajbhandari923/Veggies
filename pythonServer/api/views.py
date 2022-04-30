@@ -31,7 +31,7 @@ class WebHookView(View):
     def post(self,req,format=None):
         print(f"\n\n Recieved Webhook: {req.body} \n")
         
-        if req.body.get("object") == "page":
+        if False or req.body.get("object") == "page":
             
 
             for entry in req.body["entry"]:
