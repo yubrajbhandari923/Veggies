@@ -30,7 +30,7 @@ class WebHookView(View):
             wit_greeting = recieved_message.get("nlp").get("wit$greetings")
             
             
-            if wit_greeting.get("value") == True and wit_greeting.get("confidence") >= 0.9:
+            if wit_greeting and wit_greeting.get("value") == True and wit_greeting.get("confidence") >= 0.9:
                 res["message"]["attachment"] = {
                     "type" : "template",
                     "payload": get_started_payload

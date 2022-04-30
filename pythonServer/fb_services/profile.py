@@ -26,7 +26,7 @@ class Profile:
         return [
             {
                 "locale": "default",
-                "composer_input_disabled": False,
+                "composer_input_disabled": True, # Disables Typing field
                 "call_to_actions": [
                     {
                         "title": "menu.restart",
