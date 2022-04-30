@@ -230,6 +230,7 @@ class WebHookView(View):
             }
 
             response = callSendAPI(res3)
+            print(response.text)
         
         if payload == "LIST_FARMERS":
             res["message"]["text"] = ""
