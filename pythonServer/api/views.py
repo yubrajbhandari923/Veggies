@@ -27,7 +27,7 @@ class WebHookView(View):
 
         if recieved_message.get("text"):
             text = recieved_message.get("text")
-            wit_greeting = recieved_message.get("nlp").get("wit$greetings")
+            wit_greeting = recieved_message.get("nlp").get('traits').get("wit$greetings")
             
             
             if wit_greeting and wit_greeting.get("value") == True and wit_greeting.get("confidence") >= 0.9:
