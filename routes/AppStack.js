@@ -51,7 +51,7 @@ export default class AuthStack extends Component {
 const TabNavigator = () => {
   return (
     <Tab.Navigator
-      initialRouteName="HOME-SCREEN"
+      initialRouteName="PROFILE-SCREEN"
       screenOptions={{
         tabBarShowLabel: false,
         headerShown: false,
