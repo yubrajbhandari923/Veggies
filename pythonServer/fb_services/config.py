@@ -10,6 +10,7 @@ SHOP_URL = os.environ.get("SHOP_URL")
 APP_URL = os.environ.get("APP_URL") #heroku website link
 WEBHOOK_URL = APP_URL +'/webhook'
 PERSONAS = dict()
+VERIFY_TOKEN = os.environ["VERIFY_TOKEN"]
 
 NEW_PERSONAS = [
     {
