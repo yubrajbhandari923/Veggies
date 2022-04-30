@@ -12,7 +12,7 @@ from fb_services.profile import Profile
 from fb_services.config import *
 from fb_services.FBAPI import callNLPConfigsAPI, callSendAPI
 
-from .payloads import Welcome_payload
+from fb_services.payloads import get_started_payload
 
 class WebHookView(View):
     def handleMessage(self, sender_psid, recieved_message):
@@ -33,7 +33,7 @@ class WebHookView(View):
             if wit_greeting.get("value") == True and wit_greeting.get("confidence") >= 0.9:
                 res["message"]["attachment"] = {
                     "type" : "template",
-                    "payload": Welcome_payload
+                    "payload": get_started_payload
                 }
                 
             

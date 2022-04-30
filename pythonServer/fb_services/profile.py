@@ -1,5 +1,6 @@
 from .FBAPI import *
 from .config import *
+from .payloads import get_started_payload
 
 class Profile:
     def setWebhook(self):
@@ -8,7 +9,8 @@ class Profile:
 
     @property
     def getGetStarted(self):
-        return {"payload": "GET_STARTED"}
+        """ """
+        return {"payload": get_started_payload}
 
     @property
     def getGreeting(self):
@@ -27,31 +29,16 @@ class Profile:
                 "composer_input_disabled": False,
                 "call_to_actions": [
                     {
-                        "title": "menu.order",
+                        "title": "menu.restart",
                         "type": "postback",
-                        "payload": "TRACK_ORDER",
+                        "payload": "GET_STARTED",
                     },
-                    {
-                        "title": "menu.help",
-                        "type": "postback",
-                        "payload": "CARE_HELP",
-                    },
-                    {
-                        "title": "menu.suggestion",
-                        "type": "postback",
-                        "payload": "CURATION",
-                    },
-                    {
-                        "type": "web_url",
-                        "title": "menu.shop",
-                        "url": SHOP_URL,
-                        "webview_height_ratio": "full",
-                    },
-                ],
+                ]
             }
         ]
 
     def setThread(self):
+        """Sets the profile like Get Started page, Default Greeting when get started is clicked and Persistent Menu"""
         profilePayload = {
             "get_started": self.getGetStarted,
             "greeting" : self.getGreeting,

@@ -1,6 +1,6 @@
 from fb_services.config import APP_URL
 
-Welcome_payload = {
+get_started_payload = { # GET STARTED POSTBACK PAYLOAD
     "template_type" :"generic",
     "elements" : [
         {
