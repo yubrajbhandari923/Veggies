@@ -1,6 +1,6 @@
 import os
 
-API_URL= "https://graph.facebook.com/v11.0"
+API_URL= "https://graph.facebook.com/v13.0"
 APP_ID = os.environ.get("APP_ID")
 APP_SECRET = os.environ.get("APP_SECRET")
 VERIFY_TOKEN = os.environ.get("VERIFY_TOKEN")
