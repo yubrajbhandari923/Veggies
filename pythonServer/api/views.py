@@ -252,8 +252,9 @@ class WebHookView(View):
 
             response = callSendAPI(res3)
             print(response.text)
+            return
 
-        if payload == "LIST_FARMERS":
+        if payload == "LIST_FARMERS1":
             res4 = {
                 "messaging_type": "RESPONSE",
                 "recipient": {"id": str(sender_psid)},
@@ -320,7 +321,8 @@ class WebHookView(View):
             }
 
         response = callSendAPI(res4)
-
+        return 
+        
     def get(self, req, format=None):
         """Verify our webhook."""
 
