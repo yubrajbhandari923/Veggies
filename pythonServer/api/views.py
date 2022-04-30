@@ -143,11 +143,11 @@ class WebHookView(View):
             response = callSendAPI(res)
             print(f"\nHandle Postback\n {response.status_code} : {response.text} ")
 
-            res["message"]["attachment"] = {}
+            res["message"].pop("attachment")
             res["message"]["text"] = "Here you can order Vegetables from farmers nearby you."
             response = callsendAPI(res)
 
-            res["message"]["text"] = ""
+            res["message"].pop("text")
             res["message"]["attachment"] = {
                 "type" : "template",
                 "payload": {
@@ -200,8 +200,30 @@ class WebHookView(View):
         
         if payload[:5] == "ORDER":
             res["message"]["text"] = ""
-            # res["message"][""]
+            res["message"]["attachments"] = {
+                "type": "template",
+                "payload" : {
+                    "template_type": "button",
+                    "text": "Please Select your Location: ",
+                    "buttons": [
+                        {"type": "postback", "title": "Kathmandu","payload": "LIST_FARMERS"},
+                        {"type": "postback", "title": "Banglore","payload": "LIST_FARMERS"},
+                        {"type": "postback", "title": "Butwal","payload": "LIST_FARMERS"},
+                        {"type": "postback", "title": "Mustang","payload": "LIST_FARMERS"},
+                    ]
+                }
+            }
 
+            response = callSendAPI(res)
+        
+        if payload == "LIST_FARMERS":
+            res["message"]["text"] = ""
+            res["message"]["attachments"] = {
+                "type": "template",
+                "payload" : {
+                    "template_type" : ""
+                }
+            }
 
     def callSendAPI(self, sender_psid, response):
         pass
