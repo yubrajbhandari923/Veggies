@@ -208,7 +208,7 @@ class WebHookView(View):
 
             response = callSendAPI(res2)
         
-        if payload[:5] == "ORDER":
+        if payload == "ORDER_BEANS":
             res3 = {
                             "messaging_type": "RESPONSE",
             "recipient": {"id": str(sender_psid)},
