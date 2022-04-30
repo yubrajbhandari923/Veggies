@@ -41,10 +41,19 @@ class Profile:
         """Sets the profile like Get Started page, Default Greeting when get started is clicked and Persistent Menu"""
         profilePayload = {
             "get_started": self.getGetStarted,
-            "greeting" : self.getGreeting,
-            "persistent_menu": self.getPersistanceMenu
         }
 
+        print (f"ProfilePayload : {profilePayload}")
+        print(callMessengerProfileAPI(profilePayload))
+            
+        profilePayload = {
+            "greeting" : self.getGreeting,
+        }
+        print (f"ProfilePayload : {profilePayload}")
+        print(callMessengerProfileAPI(profilePayload))
+        profilePayload = {
+            "persistent_menu": self.getPersistanceMenu
+        }
         print (f"ProfilePayload : {profilePayload}")
         print(callMessengerProfileAPI(profilePayload))
 
