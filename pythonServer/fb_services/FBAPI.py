@@ -108,3 +108,12 @@ def getUserProfile(senderIGSID):
     return {
         "Error" : res.text
     }
+
+def handleMessage(sender_psid, recieved_message):
+    pass
+
+def handlePostback(sender_psid, recieved_postback):
+    pass
+
+def callSendAPI(sender_psid, response):
+    pass

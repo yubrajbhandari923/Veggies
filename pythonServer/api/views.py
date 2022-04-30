@@ -29,15 +29,19 @@ class WebHookView(View):
 
     @csrf_exempt
     def post(self,req,format=None):
-        print(f"\n\n Recieved Webhook: {req.POST} \n")
+        print(f"\n\n Recieved Webhook: {req.body} \n")
         
-        if req.POST.get("object") == "page":
+        if req.body.get("object") == "page":
             
 
-            for entry in req.POST["entry"]:
+            for entry in req.body["entry"]:
                 # if "changes" in entry:
+                webhook_event = entry['messaging'][0]
                 print(f"\n\n {entry['messaging'][0]} \n\n")
-                return HttpResponse('EVENT_RECIEVED') 
+
+                sender_psid = webhook_event['sender_id']
+                print (f'\n\n Sender PSID {sender_psid} \n\n')
+            return HttpResponse('EVENT_RECIEVED') 
 
         return HttpResponse('RECIEVED')
 
