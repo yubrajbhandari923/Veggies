@@ -221,10 +221,10 @@ class WebHookView(View):
                     "template_type": "button",
                     "text": "Please Select your Location: ",
                     "buttons": [
-                        {"type": "postback", "title": "Kathmandu","payload": "LIST_FARMERS"},
-                        {"type": "postback", "title": "Banglore","payload": "LIST_FARMERS"},
-                        {"type": "postback", "title": "Butwal","payload": "LIST_FARMERS"},
-                        {"type": "postback", "title": "Mustang","payload": "LIST_FARMERS"},
+                        {"type": "postback", "title": "Kathmandu","payload": "LIST_FARMERS1"},
+                        {"type": "postback", "title": "Banglore","payload": "LIST_FARMERS2"},
+                        {"type": "postback", "title": "Butwal","payload": "LIST_FARMERS3"},
+                        {"type": "postback", "title": "Mustang","payload": "LIST_FARMERS4"},
                     ]
                 }
             }
