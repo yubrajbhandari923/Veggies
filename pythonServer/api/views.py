@@ -17,7 +17,7 @@ from fb_services.FBAPI import callNLPConfigsAPI, callSendAPI
 
 
 class WebHookView(View):
-    def handleMessage(sender_psid, recieved_message):
+    def handleMessage(self, sender_psid, recieved_message):
         
         print(f"\n\n Recieved Message {recieved_message} by {sender_psid} ")
         res = {
@@ -31,10 +31,10 @@ class WebHookView(View):
         
         callSendAPI(res)
 
-    def handlePostback(sender_psid, recieved_postback):
+    def handlePostback(self, sender_psid, recieved_postback):
         pass
 
-    def callSendAPI(sender_psid, response):
+    def callSendAPI(self, sender_psid, response):
         pass
 
     def get(self, req, format=None):
