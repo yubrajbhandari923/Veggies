@@ -27,7 +27,7 @@ class WebHookView(View):
         }
 
         if recieved_message.get("text"):
-            res['message']['text'] = f"You send the message {recieved_message} "
+            res['message']['text'] = f"You send the message {recieved_message.get('text')} "
         
         response = callSendAPI(res)
 
