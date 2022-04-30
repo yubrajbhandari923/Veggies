@@ -66,7 +66,7 @@ class WebHookView(View):
                                 {
                                     "title": "Is this the right picture?",
                                     "subtitle": "Tap a button to answer.",
-                                    "image_url": url_,
+                                    "image_url": f"{APP_URL}/static/img/welcome.jpg",
                                     "buttons": [
                                         {
                                             "type": "postback",
