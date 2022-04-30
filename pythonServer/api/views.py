@@ -143,12 +143,19 @@ class WebHookView(View):
             response = callSendAPI(res)
             print(f"\nHandle Postback\n {response.status_code} : {response.text} ")
 
-            res["message"].pop("attachment")
-            res["message"]["text"] = "Here you can order Vegetables from farmers nearby you."
-            response = callsendAPI(res)
+            res1 ={
+                 "messaging_type": "RESPONSE",
+                "recipient": {"id": str(sender_psid)},
+            }
+            res1["message"]["text"] = "Here you can order Vegetables from farmers nearby you."
+            response = callsendAPI(res1)
 
-            res["message"].pop("text")
-            res["message"]["attachment"] = {
+            res2 ={
+                            "messaging_type": "RESPONSE",
+            "recipient": {"id": str(sender_psid)},
+
+            }
+            res2["message"]["attachment"] = {
                 "type" : "template",
                 "payload": {
                     "template_type" : "generic",
@@ -196,11 +203,15 @@ class WebHookView(View):
                 }
             }
 
-            response = callSendAPI(res)
+            response = callSendAPI(res2)
         
         if payload[:5] == "ORDER":
-            res["message"]["text"] = ""
-            res["message"]["attachments"] = {
+            res3 = {
+                            "messaging_type": "RESPONSE",
+            "recipient": {"id": str(sender_psid)},
+
+            }
+            res3["message"]["attachments"] = {
                 "type": "template",
                 "payload" : {
                     "template_type": "button",
@@ -214,14 +225,19 @@ class WebHookView(View):
                 }
             }
 
-            response = callSendAPI(res)
+            response = callSendAPI(res3)
         
         if payload == "LIST_FARMERS":
             res["message"]["text"] = ""
             res["message"]["attachments"] = {
                 "type": "template",
                 "payload" : {
-                    "template_type" : ""
+                    "template_type" : "generic",
+                    "elements": [{
+                        "title": "Farmer 1",
+                        "subtitle": "Price: Rs100/kg"
+                        ""
+                    }]
                 }
             }
 
