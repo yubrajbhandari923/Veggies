@@ -17,16 +17,23 @@ class WebHookView(View):
     def handleMessage(self, sender_psid, recieved_message):
 
         print(f"\n\n Recieved Message {recieved_message} by {sender_psid} ")
-        res = {
+      
+        res = { # Response Object
             "messaging_type": "RESPONSE",
             "recipient": {"id": str(sender_psid)},
             "message": {"text": ""},
         }
 
         if recieved_message.get("text"):
-            res["message"][
-                "text"
-            ] = f"You send the message {recieved_message.get('text')} "
+            text = recieved_message.get("text")
+            wit_greeting = recieved_message.get("nlp").get("wit$greetings")
+            
+            
+
+            res["message"]["text"] = f"You send the message {recieved_message.get('text')} "
+        
+        
+        
         if recieved_message.get("attachments"):
             url_ = recieved_message.get("attachments")[0]["payload"]["url"]
             # res["message"]["text"] = f"URL : {url_} "
