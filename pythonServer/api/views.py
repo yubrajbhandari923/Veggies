@@ -134,6 +134,7 @@ class WebHookView(View):
 
         if payload == "yes":
             callSendAPI(reqBody)
+
         if payload == "GET_STARTED" :
             res["message"]["attachment"] = {
                 "type": "template",
@@ -141,7 +142,65 @@ class WebHookView(View):
             }
             response = callSendAPI(res)
             print(f"\nHandle Postback\n {response.status_code} : {response.text} ")
+
+            res["message"]["attachment"] = {}
+            res["message"]["text"] = "Here you can order Vegetables from farmers nearby you."
+            response = callsendAPI(res)
+
+            res["message"]["text"] = ""
+            res["message"]["attachment"] = {
+                "type" : "template",
+                "payload": {
+                    "template_type" : "generic",
+                    "elements": [{
+                        "title" : "Cabbage",
+                        "image_url" : f"{APP_URL}/static/img/cabbage.jpg",
+                        "buttons" : [
+                            {
+                                "type":"postback",
+                                "title": "Order",
+                                "payload": "ORDER_CABBAGE",
+                            }
+                        ]  
+                    },{
+                        "title" : "Potatoes",
+                        "image_url" : f"{APP_URL}/static/img/potato.jpg",
+                        "buttons" : [
+                            {
+                                "type":"postback",
+                                "title": "Order",
+                                "payload": "ORDER_POTATO",
+                            }
+                        ]  
+                    },{
+                        "title" : "Beans",
+                        "image_url" : f"{APP_URL}/static/img/beans.jpg",
+                        "buttons" : [
+                            {
+                                "type":"postback",
+                                "title": "Order",
+                                "payload": "ORDER_BEANS",
+                            }
+                        ]  
+                    },{
+                        "title" : "Egg Plant",
+                        "image_url" : f"{APP_URL}/static/img/eggplant.jpg",
+                        "buttons" : [
+                            {
+                                "type":"postback",
+                                "title": "Order",
+                                "payload": "ORDER_EGGPLANT",
+                            }
+                        ]  
+                    }]
+                }
+            }
+
+            response = callSendAPI(res)
         
+        if payload[:5] == "ORDER":
+            res["message"]["text"] = ""
+            # res["message"][""]
 
 
     def callSendAPI(self, sender_psid, response):
