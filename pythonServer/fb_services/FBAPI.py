@@ -42,7 +42,7 @@ def callMessengerProfileAPI(reqBody):
     res = requests.post(
         f"{API_URL}/me/messenger_profile?access_token={PAGE_ACCESS_TOKEN}",
         headers={'Content-Type':'application/json'},
-        json=reqBody,
+        data=json.dumps(reqBody),
     )
 
     if res.status_code == 200:
