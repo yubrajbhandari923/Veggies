@@ -3,6 +3,7 @@ import React, {createContext} from 'react';
 import firebase, {auth} from '../firebase';
 export const AuthContext = createContext();
 import {errorCodeBasedOnFrbCode} from '../helpers/firebaseErrorCodesMessage';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 export default class AuthProvider extends React.Component {
   constructor(props) {
     super(props);
@@ -11,6 +12,8 @@ export default class AuthProvider extends React.Component {
       whichProcessIsHappenningNow: null,
       // Stores the user object from firebase
       user: null,
+
+      firstNews: null,
 
       // Stores the message object that is displayed in snackbar
       message: {
@@ -35,6 +38,11 @@ export default class AuthProvider extends React.Component {
           setUser: userObj => this.setState({user: userObj}),
 
           whichProcessIsHappenningNow: this.state.whichProcessIsHappenningNow,
+          setWhichProcessIsHappenningNow: value =>
+            this.setState({whichProcessIsHappenningNow: value}),
+
+          firstNews: this.state.firstNews,
+          setFirstNews: newsObj => this.setState({firstNews: newsObj}),
 
           // It stores the message that is displayed in snackbar
           message: this.state.message,
@@ -71,18 +79,33 @@ export default class AuthProvider extends React.Component {
               });
           },
 
-          googleLogin: () => {
-            console.log('DEVELOPMENT PHASE');
+          googleLogin: async () => {
+            this.setState({whichProcessIsHappenningNow: 'LOGIN-GOOGLE'});
+            // Get the users ID token
+
+            const {idToken} = await GoogleSignin.signIn();
+
+            // Create a Google credential with the token
+            const googleCredential =
+              firebase.auth.GoogleAuthProvider.credential(idToken);
+
+            // Sign-in the user with the credential
+            return await firebase.auth().signInWithCredential(googleCredential);
           },
 
           // Facebook Login
           facebookLogin: () => {
+            console.log(user);
             console.log('DEVELOPMENT PHASE');
           },
           // LOGOUT function
 
           logout: () => {
-            console.log('Predded');
+            console.log(this.state.user.providerData.providerId);
+            if (this.state.user.providerData.providerId == 'google.com') {
+              GoogleSignin.revokeAccess();
+              GoogleSignin.signOut();
+            }
 
             firebase
               .auth()
@@ -98,6 +121,32 @@ export default class AuthProvider extends React.Component {
                   console.log(e);
                 }
               });
+          },
+
+          search: (articleArray, query) => {
+            // if the user submits an empty string, return
+            if (query?.length == 0 || !query) {
+              return;
+            }
+
+            // First we pick up article array
+            // Then enter in every article object
+            // Then in every article we check if the query matches with author, description,content or title.
+            // that means we only search in four places i.e title, description,author and content
+            // Then We store the array of objects that pass the test in variable below
+
+            let queryPassedObjects = articleArray.filter(
+              (currentObj, index) => {
+                return (
+                  currentObj?.title?.search(RegExp(query, 'gi')) != -1 ||
+                  currentObj?.description?.search(RegExp(query, 'gi')) != -1 ||
+                  currentObj?.author?.search(RegExp(query, 'gi')) != -1 ||
+                  currentObj?.content?.search(RegExp(query, 'gi')) != -1
+                );
+              },
+            );
+
+            return queryPassedObjects;
           },
         }}>
         {this.props.children}
