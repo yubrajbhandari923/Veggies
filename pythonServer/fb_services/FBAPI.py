@@ -82,7 +82,7 @@ def callNLPConfigsAPI():
 
 def callSendAPI(reqBody):
     res = requests.post(
-        f"{API_URL}/me/messages?access_token={PAGE_ACCESS_TOKEN}", params=reqBody
+        f"{API_URL}/me/messages?access_token={PAGE_ACCESS_TOKEN}", data=reqBody
     )
     return res
 

@@ -22,7 +22,7 @@ class WebHookView(View):
         print(f"\n\n Recieved Message {recieved_message} by {sender_psid} ")
         res = {
             "messaging_type" : "RESPONSE",
-            "recipient" : { "id" : sender_psid},
+            "recipient" : { "id" : str(sender_psid)},
             "message" : {"text" : ""}
         }
 
