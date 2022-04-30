@@ -29,7 +29,9 @@ class WebHookView(View):
         if recieved_message.get("text"):
             res['message']['text'] = f"You send the message {recieved_message} "
         
-        callSendAPI(res)
+        response = callSendAPI(res)
+
+        print(f'\n\n {response.status_code} : {response.text} ')
 
     def handlePostback(self, sender_psid, recieved_postback):
         pass
