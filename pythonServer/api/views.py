@@ -215,7 +215,7 @@ class WebHookView(View):
             "message" : {}
 
             }
-            res3["message"]["attachments"] = {
+            res3["message"]["attachment"] = {
                 "type": "template",
                 "payload" : {
                     "template_type": "generic",
@@ -234,7 +234,7 @@ class WebHookView(View):
         
         if payload == "LIST_FARMERS":
             res["message"]["text"] = ""
-            res["message"]["attachments"] = {
+            res["message"]["attachment"] = {
                 "type": "template",
                 "payload" : {
                     "template_type" : "generic",
