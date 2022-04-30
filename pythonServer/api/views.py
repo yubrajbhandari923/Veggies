@@ -218,8 +218,8 @@ class WebHookView(View):
             res3["message"]["attachments"] = {
                 "type": "template",
                 "payload" : {
-                    "template_type": "button",
-                    "text": "Please Select your Location: ",
+                    "template_type": "generic",
+                    "title": "Please Select your Location: ",
                     "buttons": [
                         {"type": "postback", "title": "Kathmandu","payload": "LIST_FARMERS1"},
                         {"type": "postback", "title": "Banglore","payload": "LIST_FARMERS2"},

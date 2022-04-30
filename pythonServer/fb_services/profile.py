@@ -18,7 +18,7 @@ class Profile:
         TODO: Make this function similiar to JS(original-coast-clothing demo app) to enable translations
         """
         return [
-            {"locale": "default", "text": "Hello !!"},
+            {"locale": "default", "text": "Welcome to Veggies App Chatbot"},
         ]
 
     @property
