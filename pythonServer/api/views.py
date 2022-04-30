@@ -22,7 +22,7 @@ class WebHookView(View):
         res = { # Response Object
             "messaging_type": "RESPONSE",
             "recipient": {"id": str(sender_psid)},
-            "message": {"text": ""},
+            "message": {},
         }
 
         if recieved_message.get("text"):
@@ -37,7 +37,7 @@ class WebHookView(View):
                         "payload": get_started_payload
                     }
             except Exception: 
-                res["message"]["text"] = "You are a nice lady"
+                res["message"]["text"] = "You are a nice lady तर थुतुनाे भएन"
                 
             
             # res["message"]["text"] = f"You send the message {recieved_message.get('text')} "
