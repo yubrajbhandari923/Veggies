@@ -14,12 +14,13 @@ from fb_services.FBAPI import callNLPConfigsAPI, callSendAPI
 
 from fb_services.payloads import get_started_payload
 
+
 class WebHookView(View):
     def handleMessage(self, sender_psid, recieved_message):
 
         print(f"\n\n Recieved Message {recieved_message} by {sender_psid} ")
-      
-        res = { # Response Object
+
+        res = {  # Response Object
             "messaging_type": "RESPONSE",
             "recipient": {"id": str(sender_psid)},
             "message": {},
@@ -28,22 +29,40 @@ class WebHookView(View):
         if recieved_message.get("text"):
             text = recieved_message.get("text")
             try:
-                wit_greeting = recieved_message.get("nlp").get('traits').get("wit$greetings")[0]
-                
-                
-                if wit_greeting and wit_greeting.get("value") == True and wit_greeting.get("confidence") >= 0.9:
+                wit_greeting = (
+                    recieved_message.get("nlp").get("traits").get("wit$greetings")[0]
+                )
+
+                if (
+                    wit_greeting
+                    and wit_greeting.get("value") == True
+                    and wit_greeting.get("confidence") >= 0.9
+                ):
                     res["message"]["attachment"] = {
-                        "type" : "template",
-                        "payload": get_started_payload
+                        "type": "template",
+                        "payload": {  
+                            "template_type": "generic",
+                            "elements": [
+                                {
+                                    "title": "Welcome to Veggies Market",
+                                    "subtitle": "Connect with generic farmers in your locality.",
+                                    "image_url": f"{APP_URL}/static/img/welcome.jpg",
+                                    "buttons": [
+                                        {
+                                            "type": "postback",
+                                            "title": "Yes",
+                                            "payload": "yes",
+                                        }
+                                    ],
+                                }
+                            ],
+                        },
                     }
-            except Exception: 
+            except Exception:
                 res["message"]["text"] = "You are a nice lady "
-                
-            
+
             # res["message"]["text"] = f"You send the message {recieved_message.get('text')} "
-        
-        
-        
+
         if recieved_message.get("attachments"):
             url_ = recieved_message.get("attachments")[0]["payload"]["url"]
             # res["message"]["text"] = f"URL : {url_} "
