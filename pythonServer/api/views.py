@@ -39,7 +39,7 @@ class WebHookView(View):
                 print(f"\n\n {entry['messaging'][0]} \n\n")
                 return HttpResponse('EVENT_RECIEVED') 
 
-        return HttpResponseForbidden()
+        return HttpResponse('RECIEVED')
 
 class ProfileView(APIView):
     def get(self, req, format=None):
