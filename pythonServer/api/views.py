@@ -146,6 +146,8 @@ class WebHookView(View):
             res1 ={
                  "messaging_type": "RESPONSE",
                 "recipient": {"id": str(sender_psid)},
+            "message" : {}
+
             }
             res1["message"]["text"] = "Here you can order Vegetables from farmers nearby you."
             response = callsendAPI(res1)
@@ -153,6 +155,7 @@ class WebHookView(View):
             res2 ={
                             "messaging_type": "RESPONSE",
             "recipient": {"id": str(sender_psid)},
+            "message" : {}
 
             }
             res2["message"]["attachment"] = {
@@ -209,6 +212,7 @@ class WebHookView(View):
             res3 = {
                             "messaging_type": "RESPONSE",
             "recipient": {"id": str(sender_psid)},
+            "message" : {}
 
             }
             res3["message"]["attachments"] = {
