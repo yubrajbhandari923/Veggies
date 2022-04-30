@@ -13,25 +13,54 @@ from fb_services.config import *
 from fb_services.FBAPI import callNLPConfigsAPI, callSendAPI
 
 
-
-
-
 class WebHookView(View):
     def handleMessage(self, sender_psid, recieved_message):
-        
+
         print(f"\n\n Recieved Message {recieved_message} by {sender_psid} ")
         res = {
-            "messaging_type" : "RESPONSE",
-            "recipient" : { "id" : str(sender_psid)},
-            "message" : {"text" : ""}
+            "messaging_type": "RESPONSE",
+            "recipient": {"id": str(sender_psid)},
+            "message": {"text": ""},
         }
 
         if recieved_message.get("text"):
-            res['message']['text'] = f"You send the message {recieved_message.get('text')} "
-        
+            res["message"][
+                "text"
+            ] = f"You send the message {recieved_message.get('text')} "
+        if recieved_message.get("attachments"):
+            url_ = recieved_message.get("attachments")[0]["payload"]["url"]
+            res["message"]["text"] = f"URL : {url_} "
+
+            response = {
+                "attachment": {
+                    "type": "template",
+                    "payload": {
+                        "template_type": "generic",
+                        "elements": [
+                            {
+                                "title": "Is this the right picture?",
+                                "subtitle": "Tap a button to answer.",
+                                "image_url": url_,
+                                "buttons": [
+                                    {
+                                        "type": "postback",
+                                        "title": "Yes!",
+                                        "payload": "yes",
+                                    },
+                                    {
+                                        "type": "postback",
+                                        "title": "No!",
+                                        "payload": "no",
+                                    },
+                                ],
+                            }
+                        ],
+                    },
+                }
+            }
         response = callSendAPI(res)
 
-        print(f'\n\n {response.status_code} : {response.text} ')
+        print(f"\n\n {response.status_code} : {response.text} ")
 
     def handlePostback(self, sender_psid, recieved_postback):
         pass
@@ -55,15 +84,15 @@ class WebHookView(View):
 
     @csrf_exempt
     def post(self, req, format=None):
-        """ {"object":"page",
-                "entry":[{"id":"102208592487070","time":1651280540163,
-                    "messaging":[{"sender":{"id":"7623554920995436"},"recipient":{"id":"102208592487070"},
-                                "timestamp":1651279490554,
-                                "message":{"mid":"m_iYu3nxv5U5_x7Bya7L7WduoUYteJVLlbATqo_SN5H3iXABalKc_KbzpENA-C9B37g8ZtO2UU7rrJx4f_gY8Dcg",
-                                   "text":"Hello",
-                                    "nlp":{"intents":[],"entities":{},"traits":{"wit$sentiment":[{"id":"5ac2b50a-44e4-466e-9d49-bad6bd40092c","value":"positive","confidence":0.5435}],
-                                    "wit$greetings":[{"id":"5900cc2d-41b7-45b2-b21f-b950d3ae3c5c","value":"true","confidence":0.9998}]},
-                                    "detected_locales":[{"locale":"en_XX","confidence":0.5776}]}}}]}]}"""
+        """{"object":"page",
+        "entry":[{"id":"102208592487070","time":1651280540163,
+            "messaging":[{"sender":{"id":"7623554920995436"},"recipient":{"id":"102208592487070"},
+                        "timestamp":1651279490554,
+                        "message":{"mid":"m_iYu3nxv5U5_x7Bya7L7WduoUYteJVLlbATqo_SN5H3iXABalKc_KbzpENA-C9B37g8ZtO2UU7rrJx4f_gY8Dcg",
+                           "text":"Hello",
+                            "nlp":{"intents":[],"entities":{},"traits":{"wit$sentiment":[{"id":"5ac2b50a-44e4-466e-9d49-bad6bd40092c","value":"positive","confidence":0.5435}],
+                            "wit$greetings":[{"id":"5900cc2d-41b7-45b2-b21f-b950d3ae3c5c","value":"true","confidence":0.9998}]},
+                            "detected_locales":[{"locale":"en_XX","confidence":0.5776}]}}}]}]}"""
 
         print(f"\n\n Recieved Webhook: {req.body} \n")
 
@@ -85,9 +114,8 @@ class WebHookView(View):
                 elif webhook_event.get("postback"):
                     postback = webhook_event.get("postback")
                     self.handlePostback(sender_psid, postback)
-            
-            return HttpResponse("EVENT_RECIEVED")
 
+            return HttpResponse("EVENT_RECIEVED")
 
         return HttpResponse("RECIEVED")
 
