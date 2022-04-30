@@ -33,11 +33,11 @@ class WebHookView(View):
                     recieved_message.get("nlp").get("traits").get("wit$greetings")[0]
                 )
 
-                if (
-                    wit_greeting
-                    and wit_greeting.get("value") == True
-                    and wit_greeting.get("confidence") >= 0.9
-                ):
+                # if (
+                #     wit_greeting
+                #     and wit_greeting.get("value") == True
+                #     and wit_greeting.get("confidence") >= 0.9
+                # ):
                     # res["message"]["attachment"] = {
                     #     "type": "template",
                     #     "payload": {
@@ -58,8 +58,8 @@ class WebHookView(View):
                     #         ],
                     #     },
                     # }
-                    print("\n\n Hellooooooooooooooooooo \n\n\n")
-                    res["message"]["attachment"] = {
+                print("\n\n Hellooooooooooooooooooo \n\n\n")
+                res["message"]["attachment"] = {
                         "type": "template",
                         "payload": {
                             "template_type": "generic",
