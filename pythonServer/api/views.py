@@ -12,7 +12,7 @@ from fb_services.profile import Profile
 from fb_services.config import *
 from fb_services.FBAPI import callNLPConfigsAPI, callSendAPI
 
-from payloads import Welcome_payload
+from .payloads import Welcome_payload
 
 class WebHookView(View):
     def handleMessage(self, sender_psid, recieved_message):
