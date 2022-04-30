@@ -9,7 +9,7 @@ export default class InfoImage extends Component {
         style={{
           height: 160,
           width: 170,
-          resizeMode: 'cover',
+          resizeMode: 'contain',
           ...this.props.style,
         }}
       />

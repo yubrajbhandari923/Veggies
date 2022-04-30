@@ -101,8 +101,7 @@ export default class AuthProvider extends React.Component {
           // LOGOUT function
 
           logout: () => {
-            console.log(this.state.user.providerData.providerId);
-            if (this.state.user.providerData.providerId == 'google.com') {
+            if (this.state.user.providerData[0]['providerId'] == 'google.com') {
               GoogleSignin.revokeAccess();
               GoogleSignin.signOut();
             }

@@ -57,6 +57,7 @@ export default function LoginScreen({navigation}) {
         <SocialButtons
           provider="GOOGLE"
           process={whichProcessIsHappenningNow}
+          disabled={whichProcessIsHappenningNow == 'LOGIN-GOOGLE'}
           onPress={() =>
             googleLogin()
               .then(user => {
@@ -65,11 +66,7 @@ export default function LoginScreen({navigation}) {
               })
               .catch(e => {
                 setWhichProcessIsHappenningNow(null);
-                setMessage(
-                  true,
-                  true,
-                  e.message
-                );
+                setMessage(true, true, e.message);
                 // if (__DEV__) console.log(e);
               })
           }

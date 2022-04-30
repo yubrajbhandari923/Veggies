@@ -9,7 +9,7 @@ export default function StartScreen({navigation}) {
   return (
     <Background>
       <InfoImage
-        source={require('../assets/images/onboarding/onboard-1.jpg')}
+        source={require('../assets/images/logo.png')}
       />
       <Header>VEGGIES</Header>
       {/* <Paragraph>

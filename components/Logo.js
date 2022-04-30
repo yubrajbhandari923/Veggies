@@ -3,17 +3,15 @@ import {Image, StyleSheet} from 'react-native';
 
 export default function Logo() {
   return (
-    <Image
-      source={require('../assets/images/screens/background_dot.png')}
-      style={styles.image}
-    />
+    <Image source={require('../assets/images/logo.png')} style={styles.image} />
   );
 }
 
 const styles = StyleSheet.create({
   image: {
-    width: 110,
-    height: 110,
+    width: 200,
+    height: 200,
+    resizeMode: 'contain',
     marginBottom: 8,
   },
 });
