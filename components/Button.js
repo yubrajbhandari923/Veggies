@@ -12,6 +12,7 @@ export default function Button({mode, style, ...props}) {
         mode === 'outlined' && {backgroundColor: theme.colors.surface},
         style,
       ]}
+      
       labelStyle={{...styles.text, color: mode == 'outlined' ? '#000' : '#fff'}}
       mode={mode}
       {...props}

@@ -6,6 +6,7 @@ import {errorCodeBasedOnFrbCode} from '../helpers/firebaseErrorCodesMessage';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {AccessToken, LoginManager} from 'react-native-fbsdk-next';
 import {NavigationRef} from './Route';
+import {sendPasswordResetEmail} from 'firebase/auth';
 
 function navigate(name, params) {
   if (NavigationRef.isReady()) {
@@ -20,6 +21,8 @@ export default class AuthProvider extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      // Which mode are we logged in with, either farmer or consumer
+      mode: 'FARMER',
       // Stores about which process is happenning now
       whichProcessIsHappenningNow: null,
       // Stores the user object from firebase
@@ -48,6 +51,9 @@ export default class AuthProvider extends React.Component {
     return (
       <AuthContext.Provider
         value={{
+
+          mode: this.state.mode,
+          setMode: (value)=>this.setState({mode:value}),//Should be either FARMER or CONSUMERF
           user: this.state.user,
           setUser: userObj => this.setState({user: userObj}),
 
@@ -217,6 +223,29 @@ export default class AuthProvider extends React.Component {
             );
 
             return queryPassedObjects;
+          },
+
+          // Reset Passowrd
+          resetPassword: email => {
+            this.setState({whichProcessIsHappenningNow: 'RESET-PASSWORD'});
+            firebase
+              .auth()
+              .sendPasswordResetEmail(email)
+              .then(v => {
+                this.setState({whichProcessIsHappenningNow: null});
+                console.log(v);
+                this.showMessage(
+                  false,
+                  true,
+                  'Successfully send password reset email',
+                );
+              })
+              .catch(e => {
+                if (__DEV__) console.log(e);
+                this.setState({whichProcessIsHappenningNow: null});
+
+                this.showMessage(true, true, e.message);
+              });
           },
         }}>
         {this.props.children}

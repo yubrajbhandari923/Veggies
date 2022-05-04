@@ -17,12 +17,12 @@ import {AuthContext} from '../routes/AuthProvider';
 
 export default function RegisterScreen({navigation}) {
   const {register, whichProcessIsHappenningNow} = useContext(AuthContext);
-  const [name, setName] = useState({value: 'Biamrsh Bhusal', error: ''});
+  const [name, setName] = useState({value: '', error: ''});
   const [email, setEmail] = useState({
-    value: 'beemarsh.bhusal@gmail.com',
+    value: '',
     error: '',
   });
-  const [password, setPassword] = useState({value: 'Bhusal12', error: ''});
+  const [password, setPassword] = useState({value: '', error: ''});
 
   const onSignUpPressed = () => {
     const emailError = emailValidator(email.value);

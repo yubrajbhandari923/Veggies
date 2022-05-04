@@ -10,6 +10,7 @@ import LoginScreen from '../screens/LoginScreen';
 import OnBoardingScreen from '../screens/OnboardingScreen';
 import StartScreen from '../screens/StartScreen';
 import RegisterScreen from '../screens/RegisterScreen';
+import ForgotPassword from '../screens/ForgotPassword';
 
 export const Stack = createStackNavigator();
 
@@ -53,6 +54,7 @@ export default class AuthStack extends Component {
             <Stack.Screen component={StartScreen} name="START_SCREEN" />
             <Stack.Screen component={LoginScreen} name="LOGIN_SCREEN" />
             <Stack.Screen component={RegisterScreen} name="REGISTER_SCREEN" />
+            <Stack.Screen component={ForgotPassword} name="FORGOT_PASSWORD_SCREEN" />
           </Stack.Navigator>
         </Provider>
       );

@@ -20,7 +20,7 @@ import {emailValidator, passwordValidator} from '../helpers/validators';
 import {AuthContext} from '../routes/AuthProvider';
 import {errorCodeBasedOnFrbCode} from '../helpers/firebaseErrorCodesMessage';
 
-export default function LoginScreen({navigation}) {
+export default function LoginScreen({navigation, route}) {
   const {
     googleLogin,
     login,
@@ -28,6 +28,8 @@ export default function LoginScreen({navigation}) {
     setWhichProcessIsHappenningNow,
     setMessage,
     facebookLogin,
+    mode,
+    setMode,
   } = useContext(AuthContext);
 
   const [email, setEmail] = useState({value: '', error: ''});
@@ -47,13 +49,34 @@ export default function LoginScreen({navigation}) {
     login(email.value, password.value);
   };
 
+  // When the component mounts set the mode
+  useEffect(() => {
+    setMode(route.params.mode);
+  }, []);
+
+  const switchMode = () => {
+    setMode(mode == 'FARMER' ? 'CONSUMER' : 'FARMER');
+  };
+
+  // When the component mounts, lets decied whether he is a farmer or a consumer
   return (
     <Background>
-      <Logo />
+      <TouchableOpacity style={styles.switchContainer} onPress={switchMode}>
+        <Image
+          style={styles.switchImage}
+          source={
+            mode == 'FARMER'
+              ? require('../assets/icons/farmer.png')
+              : require('../assets/icons/customer.png')
+          }
+        />
+        <Text style={styles.switchText}>{mode}</Text>
+      </TouchableOpacity>
+      <Logo style={{marginBottom: 20}} />
 
       {/*  */}
 
-      <Header>LOGIN</Header>
+      {/* <Header>LOGIN</Header> */}
 
       <View style={styles.socialContainer}>
         <SocialButtons
@@ -123,7 +146,7 @@ export default function LoginScreen({navigation}) {
       {/* Forgot Password Here */}
       <View style={styles.forgotPassword}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('ResetPasswordScreen')}>
+          onPress={() => navigation.navigate('FORGOT_PASSWORD_SCREEN')}>
           <Text style={styles.forgot}>Forgot your password?</Text>
         </TouchableOpacity>
       </View>
@@ -213,5 +236,20 @@ const styles = StyleSheet.create({
     height: 30,
     width: 30,
     resizeMode: 'contain',
+  },
+  switchContainer: {
+    alignSelf: 'flex-end',
+    top: 20,
+    position: 'absolute',
+    alignItems: 'center',
+  },
+  switchImage: {
+    height: 50,
+    width: 50,
+    resizeMode: 'contain',
+  },
+  switchText: {
+    fontFamily: theme.fonts.light.fontFamily,
+    fontSize: 12,
   },
 });
