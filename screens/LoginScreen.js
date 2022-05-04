@@ -18,6 +18,7 @@ import {theme} from '../core/theme';
 
 import {emailValidator, passwordValidator} from '../helpers/validators';
 import {AuthContext} from '../routes/AuthProvider';
+import {errorCodeBasedOnFrbCode} from '../helpers/firebaseErrorCodesMessage';
 
 export default function LoginScreen({navigation}) {
   const {
@@ -26,10 +27,11 @@ export default function LoginScreen({navigation}) {
     whichProcessIsHappenningNow,
     setWhichProcessIsHappenningNow,
     setMessage,
+    facebookLogin,
   } = useContext(AuthContext);
 
-  const [email, setEmail] = useState({value: 'anup8eguy@gmail.com', error: ''});
-  const [password, setPassword] = useState({value: 'Bhusal12', error: ''});
+  const [email, setEmail] = useState({value: '', error: ''});
+  const [password, setPassword] = useState({value: '', error: ''});
 
   const onLoginPressed = () => {
     // Just Validators for LOGIN
@@ -62,7 +64,6 @@ export default function LoginScreen({navigation}) {
             googleLogin()
               .then(user => {
                 setWhichProcessIsHappenningNow(null);
-                console.log(user);
               })
               .catch(e => {
                 setWhichProcessIsHappenningNow(null);
@@ -74,6 +75,22 @@ export default function LoginScreen({navigation}) {
         <SocialButtons
           provider="FACEBOOK"
           process={whichProcessIsHappenningNow}
+          onPress={() => {
+            facebookLogin()
+              .then(user => {
+                setWhichProcessIsHappenningNow(null);
+                console.log(user);
+              })
+              .catch(e => {
+                setWhichProcessIsHappenningNow(null);
+                setMessage(
+                  true,
+                  true,
+                  e.code ? errorCodeBasedOnFrbCode(e.code) : "Couldn't Login",
+                );
+                if (__DEV__) console.log(e);
+              });
+          }}
         />
       </View>
 
@@ -181,7 +198,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   socialButton: {
-    width: 135,
+    width: 145,
     height: 50,
     borderColor: theme.colors.secondary,
     borderWidth: 1,

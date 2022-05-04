@@ -12,6 +12,7 @@ import {getAuth, onAuthStateChanged} from 'firebase/auth';
 import firebase from '../firebase';
 import LoadingScreen from '../screens/LoadingScreen';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {Settings} from 'react-native-fbsdk-next';
 
 // export the ref to access the navigation from any functions outside the Container
 export const NavigationRef = createNavigationContainerRef();
@@ -23,13 +24,15 @@ const Route = () => {
   const {user, setUser} = useContext(AuthContext);
   const [isLoading, setLoading] = useState(true);
 
-  // Configure Google Singin When Component Mounts
+  // Configure Google Singin and FB LOGIN When Component Mounts
   useEffect(() => {
     GoogleSignin.configure({
       webClientId:
         '397799283843-7ta09jbfph02mpd8lnufl0m8lqunrv2n.apps.googleusercontent.com',
       offlineAccess: false,
     });
+    Settings.setAppID('290900346580029');
+    Settings.initializeSDK();
   });
 
   // Listen to the user authentication status

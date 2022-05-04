@@ -4,6 +4,8 @@ import firebase, {auth} from '../firebase';
 export const AuthContext = createContext();
 import {errorCodeBasedOnFrbCode} from '../helpers/firebaseErrorCodesMessage';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {AccessToken, LoginManager} from 'react-native-fbsdk-next';
+
 export default class AuthProvider extends React.Component {
   constructor(props) {
     super(props);
@@ -94,9 +96,32 @@ export default class AuthProvider extends React.Component {
           },
 
           // Facebook Login
-          facebookLogin: () => {
-            console.log(user);
-            console.log('DEVELOPMENT PHASE');
+          facebookLogin: async () => {
+            // Attempt login with permissions
+
+            this.setState({whichProcessIsHappenningNow: 'LOGIN-FACEBOOK'});
+            const result = await LoginManager.logInWithPermissions([
+              'public_profile',
+              'email',
+            ]);
+
+            if (result.isCancelled) {
+              throw 'User cancelled the login process';
+            }
+
+            // Once signed in, get the users AccesToken
+            const data = await AccessToken.getCurrentAccessToken();
+
+            if (!data) {
+              throw 'Something went wrong obtaining access token';
+            }
+
+            // Create a Firebase credential with the AccessToken
+            const facebookCredential =
+              firebase.auth.FacebookAuthProvider.credential(data.accessToken);
+
+            // Sign-in the user with the credential
+            return firebase.auth().signInWithCredential(facebookCredential);
           },
           // LOGOUT function
 
