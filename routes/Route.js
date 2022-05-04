@@ -21,7 +21,7 @@ import ActionNotification from '../components/MessageSnackBar';
 // For white background across the App
 
 const Route = () => {
-  const {user, setUser} = useContext(AuthContext);
+  const {user, setUser, whichAuthentication} = useContext(AuthContext);
   const [isLoading, setLoading] = useState(true);
 
   // Configure Google Singin and FB LOGIN When Component Mounts
@@ -38,9 +38,12 @@ const Route = () => {
   // Listen to the user authentication status
 
   useEffect(() => {
+    if (whichAuthentication == 'REGISTER') return;
     setLoading(true);
     const auth = getAuth();
+
     onAuthStateChanged(auth, user => {
+      // console.log(user);
       if (user) {
         // User is signed in
         setUser(user);
@@ -58,7 +61,7 @@ const Route = () => {
     <LoadingScreen />
   ) : (
     <NavigationContainer ref={NavigationRef} theme={theme}>
-      {user ? <AppStack /> : <AuthStack />}
+      {user && whichAuthentication == 'LOGIN' ? <AppStack /> : <AuthStack />}
 
       <ActionNotification />
     </NavigationContainer>

@@ -5,7 +5,17 @@ export const AuthContext = createContext();
 import {errorCodeBasedOnFrbCode} from '../helpers/firebaseErrorCodesMessage';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {AccessToken, LoginManager} from 'react-native-fbsdk-next';
+import {NavigationRef} from './Route';
 
+function navigate(name, params) {
+  if (NavigationRef.isReady()) {
+    // Perform navigation if the react navigation is ready to handle actions
+    NavigationRef.navigate(name, params);
+  } else {
+    // You can decide what to do if react navigation is not ready
+    // You can ignore this, or add these actions to a queue you can call later
+  }
+}
 export default class AuthProvider extends React.Component {
   constructor(props) {
     super(props);
@@ -16,6 +26,8 @@ export default class AuthProvider extends React.Component {
       user: null,
 
       firstNews: null,
+
+      whichAuthentication: 'LOGIN', //To check whether it is login or register because this fucking firebase automatically authenticates on creating new user
 
       // Stores the message object that is displayed in snackbar
       message: {
@@ -39,6 +51,8 @@ export default class AuthProvider extends React.Component {
           user: this.state.user,
           setUser: userObj => this.setState({user: userObj}),
 
+          whichAuthentication: this.state.whichAuthentication,
+
           whichProcessIsHappenningNow: this.state.whichProcessIsHappenningNow,
           setWhichProcessIsHappenningNow: value =>
             this.setState({whichProcessIsHappenningNow: value}),
@@ -54,6 +68,7 @@ export default class AuthProvider extends React.Component {
           login: (email, password) => {
             // First Let the Context know that email login is happenning
             this.setState({whichProcessIsHappenningNow: 'LOGIN-EMAIL'});
+            this.setState({whichAuthentication: 'LOGIN'});
 
             firebase
               .auth()
@@ -61,17 +76,9 @@ export default class AuthProvider extends React.Component {
               .then(value => {
                 // Now the login is complete, set the happenning proces
                 this.setState({whichProcessIsHappenningNow: null});
-                //
-                // if (__DEV__) {
-                //   console.log(
-                //     'From Login Function:: -> Successfully Logged IN',
-                //   );
-                // }
               })
               .catch(error => {
                 this.setState({whichProcessIsHappenningNow: null});
-
-                // console.log(errorCodeBasedOnFrbCode(error.code));
 
                 this.showMessage(
                   true,
@@ -83,6 +90,8 @@ export default class AuthProvider extends React.Component {
 
           googleLogin: async () => {
             this.setState({whichProcessIsHappenningNow: 'LOGIN-GOOGLE'});
+            this.setState({whichAuthentication: 'LOGIN'});
+
             // Get the users ID token
 
             const {idToken} = await GoogleSignin.signIn();
@@ -100,6 +109,8 @@ export default class AuthProvider extends React.Component {
             // Attempt login with permissions
 
             this.setState({whichProcessIsHappenningNow: 'LOGIN-FACEBOOK'});
+            this.setState({whichAuthentication: 'LOGIN'});
+
             const result = await LoginManager.logInWithPermissions([
               'public_profile',
               'email',
@@ -123,7 +134,42 @@ export default class AuthProvider extends React.Component {
             // Sign-in the user with the credential
             return firebase.auth().signInWithCredential(facebookCredential);
           },
+
+          // Register Account from Email
+          register: (username, email, password) => {
+            this.setState({whichProcessIsHappenningNow: 'REGISTER-EMAIL'});
+            this.setState({whichAuthentication: 'REGISTER'});
+
+            // First create account and then update username
+            firebase
+              .auth()
+              .createUserWithEmailAndPassword(email, password)
+              .then(userAccount =>
+                firebase.auth().currentUser.updateProfile({
+                  displayName: username,
+                }),
+              )
+              .then(() => firebase.auth().signOut())
+              .then(() => {
+                this.showMessage(false, true, 'Successfully created account');
+                this.setState({whichProcessIsHappenningNow: null});
+                navigate('LOGIN_SCREEN');
+              })
+
+              .catch(e => {
+                if (__DEV__) console.log(e);
+                this.setState({whichProcessIsHappenningNow: null});
+                this.showMessage(true, true, errorCodeBasedOnFrbCode(e.code));
+              });
+          },
           // LOGOUT function
+          updateUserName: async username => {
+            // If the provided username isnt null, undefined or less than 6 charactes , then its invalid
+            this.setState({whichProcessIsHappenningNow: 'UPDATE_USERNAME'});
+            await firebase
+              .auth()
+              .currentUser.updateProfile({displayName: username});
+          },
 
           logout: () => {
             if (this.state.user.providerData[0]['providerId'] == 'google.com') {
