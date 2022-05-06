@@ -1,7 +1,6 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext} from 'react';
 import {
   TouchableOpacity,
-  StyleSheet,
   View,
   Pressable,
   Image,
@@ -13,7 +12,7 @@ import Logo from '../components/Logo';
 import Header from '../components/Header';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
-import {theme} from '../core/theme';
+import {forgotPasswordStyles as styles} from '../styles/AuthStyles';
 
 import {emailValidator} from '../helpers/validators';
 import {AuthContext} from '../routes/AuthProvider';
@@ -65,7 +64,7 @@ export default function ForgotPassword({navigation}) {
         SEND EMAIL
       </Button>
       <View style={styles.row}>
-        <Text>Login Instead?</Text>
+        <Text style={styles.instead}>Login Instead?</Text>
         <TouchableOpacity onPress={() => navigation.replace('LOGIN_SCREEN')}>
           <Text style={styles.link}>Login</Text>
         </TouchableOpacity>
@@ -99,47 +98,3 @@ const SocialButtons = ({provider, process, ...props}) => {
     </Pressable>
   );
 };
-
-const styles = StyleSheet.create({
-  forgotPassword: {
-    width: '100%',
-    alignItems: 'flex-end',
-    marginBottom: 24,
-  },
-  row: {
-    flexDirection: 'row',
-    marginTop: 4,
-    alignItems: 'center',
-  },
-  forgot: {
-    fontSize: 13,
-    color: theme.colors.secondary,
-  },
-  link: {
-    color: theme.colors.primary,
-    fontSize: 16,
-    marginLeft: 10,
-  },
-  socialContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-  socialButton: {
-    width: 145,
-    height: 50,
-    borderColor: theme.colors.secondary,
-    borderWidth: 1,
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: 7,
-  },
-  socialIcon: {
-    height: 30,
-    width: 30,
-    resizeMode: 'contain',
-  },
-});

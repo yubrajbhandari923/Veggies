@@ -1,16 +1,17 @@
 import {StyleSheet} from 'react-native';
+import {theme} from '../core/theme';
 
 export const OnBoardStyles = colors =>
   StyleSheet.create({
     onBoardTitleStyle: {
       fontSize: 30,
-      fontFamily: 'Nunito-Medium',
-      color: '#222',
+      fontFamily: theme.fonts.family.bold2,
+      color: theme.colors.grey,
       marginBottom: -10,
     },
     onBoardSubTitleStyle: {
-      fontFamily: 'Nunito-Medium',
-      fontSize: 17,
+      fontFamily: theme.fonts.family.medium2,
+      fontSize: theme.fonts.size.medium,
       marginBottom: 70,
     },
     buttonStyle: {
@@ -20,8 +21,8 @@ export const OnBoardStyles = colors =>
       justifyContent: 'space-between',
     },
     buttonText: {
-      color: '#333',
-      fontFamily: 'Nunito-Medium',
+      color: theme.colors.grey,
+      fontFamily: theme.fonts.family.light2,
       fontSize: 15,
       letterSpacing: 2,
       marginHorizontal: 5,

@@ -1,5 +1,5 @@
 import React, {useState, useContext} from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, TouchableOpacity} from 'react-native';
 import {Text} from 'react-native-paper';
 import Background from '../components/BackGround';
 import Logo from '../components/Logo';
@@ -7,13 +7,13 @@ import Header from '../components/Header';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
 // import BackButton from '../components/BackButton';
-import {theme} from '../core/theme';
 import {
   emailValidator,
   passwordValidator,
   nameValidator,
 } from '../helpers/validators';
 import {AuthContext} from '../routes/AuthProvider';
+import {registerStyles as styles} from '../styles/AuthStyles';
 
 export default function RegisterScreen({navigation}) {
   const {register, whichProcessIsHappenningNow} = useContext(AuthContext);
@@ -42,6 +42,7 @@ export default function RegisterScreen({navigation}) {
   return (
     <Background>
       {/* <BackButton goBack={navigation.goBack} /> */}
+
       <Logo />
       <Header>Create Account</Header>
       <TextInput
@@ -82,7 +83,7 @@ export default function RegisterScreen({navigation}) {
         Sign Up
       </Button>
       <View style={styles.row}>
-        <Text>Already have an account? </Text>
+        <Text style={styles.instead}>Already have an account? </Text>
         <TouchableOpacity onPress={() => navigation.replace('LOGIN_SCREEN')}>
           <Text style={styles.link}>Login</Text>
         </TouchableOpacity>
@@ -90,16 +91,3 @@ export default function RegisterScreen({navigation}) {
     </Background>
   );
 }
-
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    marginTop: 4,
-    alignItems: 'center',
-  },
-  link: {
-    color: theme.colors.primary,
-    fontSize: 16,
-    marginLeft: 10,
-  },
-});

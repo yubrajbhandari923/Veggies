@@ -51,9 +51,8 @@ export default class AuthProvider extends React.Component {
     return (
       <AuthContext.Provider
         value={{
-
           mode: this.state.mode,
-          setMode: (value)=>this.setState({mode:value}),//Should be either FARMER or CONSUMERF
+          setMode: value => this.setState({mode: value}), //Should be either FARMER or CONSUMERF
           user: this.state.user,
           setUser: userObj => this.setState({user: userObj}),
 
@@ -143,6 +142,7 @@ export default class AuthProvider extends React.Component {
 
           // Register Account from Email
           register: (username, email, password) => {
+            if (mode == 'FARMER') return;
             this.setState({whichProcessIsHappenningNow: 'REGISTER-EMAIL'});
             this.setState({whichAuthentication: 'REGISTER'});
 

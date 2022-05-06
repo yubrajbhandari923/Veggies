@@ -52,9 +52,20 @@ export default class AuthStack extends Component {
               name="ONBOARDING_SCREEN"
             />
             <Stack.Screen component={StartScreen} name="START_SCREEN" />
-            <Stack.Screen component={LoginScreen} name="LOGIN_SCREEN" />
-            <Stack.Screen component={RegisterScreen} name="REGISTER_SCREEN" />
-            <Stack.Screen component={ForgotPassword} name="FORGOT_PASSWORD_SCREEN" />
+            <Stack.Screen
+              component={LoginScreen}
+              name="LOGIN_SCREEN"
+              initialParams={{mode: 'FARMER'}}
+            />
+            <Stack.Screen
+              component={RegisterScreen}
+              name="REGISTER_SCREEN"
+              initialParams={{mode: 'FARMER'}}
+            />
+            <Stack.Screen
+              component={ForgotPassword}
+              name="FORGOT_PASSWORD_SCREEN"
+            />
           </Stack.Navigator>
         </Provider>
       );

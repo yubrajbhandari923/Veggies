@@ -1,5 +1,6 @@
 import React from 'react';
-import {Image, StyleSheet} from 'react-native';
+import {Image} from 'react-native';
+import {logoStyles as styles} from '../styles/globalStyles';
 
 export default function Logo({style}) {
   return (
@@ -9,12 +10,3 @@ export default function Logo({style}) {
     />
   );
 }
-
-const styles = StyleSheet.create({
-  image: {
-    width: 200,
-    height: 200,
-    resizeMode: 'contain',
-    marginBottom: 8,
-  },
-});

@@ -1,7 +1,6 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {
   TouchableOpacity,
-  StyleSheet,
   View,
   Pressable,
   Image,
@@ -19,6 +18,8 @@ import {theme} from '../core/theme';
 import {emailValidator, passwordValidator} from '../helpers/validators';
 import {AuthContext} from '../routes/AuthProvider';
 import {errorCodeBasedOnFrbCode} from '../helpers/firebaseErrorCodesMessage';
+import SwitchMode from '../components/switchMode';
+import {loginScreenStyles as styles} from '../styles/AuthStyles';
 
 export default function LoginScreen({navigation, route}) {
   const {
@@ -54,24 +55,10 @@ export default function LoginScreen({navigation, route}) {
     setMode(route.params.mode);
   }, []);
 
-  const switchMode = () => {
-    setMode(mode == 'FARMER' ? 'CONSUMER' : 'FARMER');
-  };
-
   // When the component mounts, lets decied whether he is a farmer or a consumer
   return (
     <Background>
-      <TouchableOpacity style={styles.switchContainer} onPress={switchMode}>
-        <Image
-          style={styles.switchImage}
-          source={
-            mode == 'FARMER'
-              ? require('../assets/icons/farmer.png')
-              : require('../assets/icons/customer.png')
-          }
-        />
-        <Text style={styles.switchText}>{mode}</Text>
-      </TouchableOpacity>
+      <SwitchMode />
       <Logo style={{marginBottom: 20}} />
 
       {/*  */}
@@ -160,7 +147,7 @@ export default function LoginScreen({navigation, route}) {
         Login
       </Button>
       <View style={styles.row}>
-        <Text>Don't have an account?</Text>
+        <Text style={styles.instead}>Don't have an account?</Text>
         <TouchableOpacity onPress={() => navigation.replace('REGISTER_SCREEN')}>
           <Text style={styles.link}>Sign up</Text>
         </TouchableOpacity>
@@ -182,7 +169,6 @@ const SocialButtons = ({provider, process, ...props}) => {
       />
       <Text
         style={{
-          fontWeight: '700',
           color: provider == 'GOOGLE' ? '#b63429' : '#3b5999',
         }}>
         {provider}
@@ -194,62 +180,3 @@ const SocialButtons = ({provider, process, ...props}) => {
     </Pressable>
   );
 };
-
-const styles = StyleSheet.create({
-  forgotPassword: {
-    width: '100%',
-    alignItems: 'flex-end',
-    marginBottom: 24,
-  },
-  row: {
-    flexDirection: 'row',
-    marginTop: 4,
-    alignItems: 'center',
-  },
-  forgot: {
-    fontSize: 13,
-    color: theme.colors.secondary,
-  },
-  link: {
-    color: theme.colors.primary,
-    fontSize: 16,
-    marginLeft: 10,
-  },
-  socialContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-  socialButton: {
-    width: 145,
-    height: 50,
-    borderColor: theme.colors.secondary,
-    borderWidth: 1,
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: 7,
-  },
-  socialIcon: {
-    height: 30,
-    width: 30,
-    resizeMode: 'contain',
-  },
-  switchContainer: {
-    alignSelf: 'flex-end',
-    top: 20,
-    position: 'absolute',
-    alignItems: 'center',
-  },
-  switchImage: {
-    height: 50,
-    width: 50,
-    resizeMode: 'contain',
-  },
-  switchText: {
-    fontFamily: theme.fonts.light.fontFamily,
-    fontSize: 12,
-  },
-});
