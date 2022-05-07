@@ -53,7 +53,7 @@ export default function LoginScreen({navigation, route}) {
 
   // When the component mounts set the mode
   useEffect(() => {
-    if (route.params.mode) {
+    if (route.params?.mode) {
       setMode(route.params.mode);
       AsyncStorage.setItem('mode', route.params.mode);
     }
@@ -62,7 +62,7 @@ export default function LoginScreen({navigation, route}) {
   // When the component mounts, lets decied whether he is a farmer or a consumer
   return (
     <Background>
-      <SwitchMode />
+      <SwitchMode navigation={navigation} referer="login" />
       <Logo style={{marginBottom: 20}} />
 
       {/*  */}
@@ -153,7 +153,14 @@ export default function LoginScreen({navigation, route}) {
       <View style={styles.row}>
         <Text style={styles.instead}>Don't have an account?</Text>
         <TouchableOpacity
-          onPress={() => navigation.replace('REGISTER_SCREEN', {mode: null})}>
+          onPress={() =>
+            navigation.replace(
+              mode == 'FARMER'
+                ? 'REGISTER_SCREEN-FARMER'
+                : 'REGISTER_SCREEN-CONSUMER',
+              {mode: null},
+            )
+          }>
           <Text style={styles.link}>Sign up</Text>
         </TouchableOpacity>
       </View>

@@ -17,7 +17,7 @@ import {registerStyles as styles} from '../styles/AuthStyles';
 import SwitchMode from '../components/switchMode';
 
 export default function RegisterScreen({navigation}) {
-  const {register, whichProcessIsHappenningNow} = useContext(AuthContext);
+  const {register, whichProcessIsHappenningNow, mode} = useContext(AuthContext);
   const [name, setName] = useState({value: 'Ronoroa Zoro', error: ''});
   const [email, setEmail] = useState({
     value: 'anup8eguy@gmail.com',
@@ -43,7 +43,7 @@ export default function RegisterScreen({navigation}) {
   return (
     <Background>
       {/* <BackButton goBack={navigation.goBack} /> */}
-      <SwitchMode />
+      <SwitchMode navigation={navigation} referer="register"/>
 
       <Logo />
       <Header>Create Account</Header>
@@ -87,7 +87,14 @@ export default function RegisterScreen({navigation}) {
       <View style={styles.row}>
         <Text style={styles.instead}>Already have an account? </Text>
         <TouchableOpacity
-          onPress={() => navigation.replace('LOGIN_SCREEN', {mode: null})}>
+          onPress={() =>
+            navigation.replace(
+              mode == 'FARMER'
+                ? 'LOGIN_SCREEN-FARMER'
+                : 'LOGIN_SCREEN-CONSUMER',
+              {mode: null},
+            )
+          }>
           <Text style={styles.link}>Login</Text>
         </TouchableOpacity>
       </View>

@@ -15,7 +15,9 @@ export default function StartScreen({navigation}) {
 
       <Button
         mode="contained"
-        onPress={() => navigation.navigate('LOGIN_SCREEN', {mode: 'FARMER'})}
+        onPress={() =>
+          navigation.navigate('LOGIN_SCREEN-FARMER', {mode: 'FARMER'})
+        }
         icon={() => (
           <Icon iamgeLocation={require('../assets/icons/farmer.png')} />
         )}>
@@ -27,7 +29,9 @@ export default function StartScreen({navigation}) {
         icon={() => (
           <Icon iamgeLocation={require('../assets/icons/customer.png')} />
         )}
-        onPress={() => navigation.navigate('LOGIN_SCREEN', {mode: 'CONSUMER'})}>
+        onPress={() =>
+          navigation.navigate('LOGIN_SCREEN-CONSUMER', {mode: 'CONSUMER'})
+        }>
         I am a consumer
       </Button>
     </Background>

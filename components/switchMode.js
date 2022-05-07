@@ -4,7 +4,7 @@ import {AuthContext} from '../routes/AuthProvider';
 import {switchModeStyles as styles} from '../styles/AuthStyles';
 import AsyncStorage from '@react-native-community/async-storage';
 
-export default function SwitchMode() {
+export default function SwitchMode({navigation, referer}) {
   const {setMode, mode} = useContext(AuthContext);
   const switchMode = async () => {
     try {
@@ -13,6 +13,17 @@ export default function SwitchMode() {
       await AsyncStorage.setItem('mode', assign)
         .then(() => {
           setMode(assign);
+          // Now navigate to consumer or farmer
+          // This navigation is only to show animation, the rendered pages and functions for both screens are same
+          navigation.replace(
+            assign == 'FARMER'
+              ? referer == 'login'
+                ? 'LOGIN_SCREEN-FARMER'
+                : 'REGISTER_SCREEN-FARMER'
+              : referer == 'login'
+              ? 'LOGIN_SCREEN-CONSUMER'
+              : 'REGISTER_SCREEN-CONSUMER',
+          );
         })
         .catch(e => e);
     } catch (error) {
