@@ -14,15 +14,16 @@ import {
 } from '../helpers/validators';
 import {AuthContext} from '../routes/AuthProvider';
 import {registerStyles as styles} from '../styles/AuthStyles';
+import SwitchMode from '../components/switchMode';
 
 export default function RegisterScreen({navigation}) {
   const {register, whichProcessIsHappenningNow} = useContext(AuthContext);
-  const [name, setName] = useState({value: '', error: ''});
+  const [name, setName] = useState({value: 'Ronoroa Zoro', error: ''});
   const [email, setEmail] = useState({
-    value: '',
+    value: 'anup8eguy@gmail.com',
     error: '',
   });
-  const [password, setPassword] = useState({value: '', error: ''});
+  const [password, setPassword] = useState({value: 'Bhusal12', error: ''});
 
   const onSignUpPressed = () => {
     const emailError = emailValidator(email.value);
@@ -42,6 +43,7 @@ export default function RegisterScreen({navigation}) {
   return (
     <Background>
       {/* <BackButton goBack={navigation.goBack} /> */}
+      <SwitchMode />
 
       <Logo />
       <Header>Create Account</Header>
@@ -84,7 +86,8 @@ export default function RegisterScreen({navigation}) {
       </Button>
       <View style={styles.row}>
         <Text style={styles.instead}>Already have an account? </Text>
-        <TouchableOpacity onPress={() => navigation.replace('LOGIN_SCREEN')}>
+        <TouchableOpacity
+          onPress={() => navigation.replace('LOGIN_SCREEN', {mode: null})}>
           <Text style={styles.link}>Login</Text>
         </TouchableOpacity>
       </View>

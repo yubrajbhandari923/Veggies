@@ -60,7 +60,7 @@ export default class AuthStack extends Component {
             <Stack.Screen
               component={RegisterScreen}
               name="REGISTER_SCREEN"
-              initialParams={{mode: 'FARMER'}}
+              // initialParams={{mode: 'FARMER'}}
             />
             <Stack.Screen
               component={ForgotPassword}

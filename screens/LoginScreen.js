@@ -20,6 +20,7 @@ import {AuthContext} from '../routes/AuthProvider';
 import {errorCodeBasedOnFrbCode} from '../helpers/firebaseErrorCodesMessage';
 import SwitchMode from '../components/switchMode';
 import {loginScreenStyles as styles} from '../styles/AuthStyles';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default function LoginScreen({navigation, route}) {
   const {
@@ -33,8 +34,8 @@ export default function LoginScreen({navigation, route}) {
     setMode,
   } = useContext(AuthContext);
 
-  const [email, setEmail] = useState({value: '', error: ''});
-  const [password, setPassword] = useState({value: '', error: ''});
+  const [email, setEmail] = useState({value: 'anup8eguy@gmail.com', error: ''});
+  const [password, setPassword] = useState({value: 'Bhusal12', error: ''});
 
   const onLoginPressed = () => {
     // Just Validators for LOGIN
@@ -52,7 +53,10 @@ export default function LoginScreen({navigation, route}) {
 
   // When the component mounts set the mode
   useEffect(() => {
-    setMode(route.params.mode);
+    if (route.params.mode) {
+      setMode(route.params.mode);
+      AsyncStorage.setItem('mode', route.params.mode);
+    }
   }, []);
 
   // When the component mounts, lets decied whether he is a farmer or a consumer
@@ -148,7 +152,8 @@ export default function LoginScreen({navigation, route}) {
       </Button>
       <View style={styles.row}>
         <Text style={styles.instead}>Don't have an account?</Text>
-        <TouchableOpacity onPress={() => navigation.replace('REGISTER_SCREEN')}>
+        <TouchableOpacity
+          onPress={() => navigation.replace('REGISTER_SCREEN', {mode: null})}>
           <Text style={styles.link}>Sign up</Text>
         </TouchableOpacity>
       </View>

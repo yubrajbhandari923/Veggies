@@ -7,6 +7,7 @@ import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {AccessToken, LoginManager} from 'react-native-fbsdk-next';
 import {NavigationRef} from './Route';
 import {sendPasswordResetEmail} from 'firebase/auth';
+import {serverURL} from '../data/locations';
 
 function navigate(name, params) {
   if (NavigationRef.isReady()) {
@@ -23,6 +24,7 @@ export default class AuthProvider extends React.Component {
     this.state = {
       // Which mode are we logged in with, either farmer or consumer
       mode: 'FARMER',
+      setMode: mode => this.setState({mode: mode}),
       // Stores about which process is happenning now
       whichProcessIsHappenningNow: null,
       // Stores the user object from firebase
@@ -45,6 +47,14 @@ export default class AuthProvider extends React.Component {
 
   showMessage = (e, v, m) =>
     this.setState({message: {error: e, visible: v, message: m}});
+
+  executeError = (error, rawError, origin) => {
+    this.setState({whichProcessIsHappenningNow: null});
+
+    this.showMessage(true, true, error);
+
+    if (__DEV__) console.log('From ' + origin + ':' + rawError);
+  };
 
   // This Function is used to display message
   render() {
@@ -78,19 +88,20 @@ export default class AuthProvider extends React.Component {
             firebase
               .auth()
               .signInWithEmailAndPassword(email, password)
-              .then(value => {
+              .then(record => {
                 // Now the login is complete, set the happenning proces
+
+                console.log(record.user.uid);
+
                 this.setState({whichProcessIsHappenningNow: null});
               })
-              .catch(error => {
-                this.setState({whichProcessIsHappenningNow: null});
-
-                this.showMessage(
-                  true,
-                  true,
+              .catch(error =>
+                this.executeError(
                   errorCodeBasedOnFrbCode(error.code),
-                );
-              });
+                  error,
+                  'Login Fnx - as Consumer',
+                ),
+              );
           },
 
           googleLogin: async () => {
@@ -142,19 +153,43 @@ export default class AuthProvider extends React.Component {
 
           // Register Account from Email
           register: (username, email, password) => {
-            if (mode == 'FARMER') return;
             this.setState({whichProcessIsHappenningNow: 'REGISTER-EMAIL'});
             this.setState({whichAuthentication: 'REGISTER'});
 
             // First create account and then update username
+
             firebase
               .auth()
               .createUserWithEmailAndPassword(email, password)
-              .then(userAccount =>
+              .then(userAccount => {
                 firebase.auth().currentUser.updateProfile({
                   displayName: username,
-                }),
-              )
+                });
+
+                // Set admin claims for farmer
+                if (this.state.mode == 'FARMER') {
+                  //
+                  fetch(`${serverURL}/setadmin`, {
+                    method: 'POST', // or 'PUT'
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      uid: userAccount.user.uid,
+                    }),
+                  })
+                    .then(res => {
+                      return res.json().then(json => {
+                        if (res.ok) {
+                          return Promise.resolve(json);
+                        }
+                        return Promise.reject(json);
+                      });
+                    })
+
+                    .catch(e => e);
+                }
+              })
               .then(() => firebase.auth().signOut())
               .then(() => {
                 this.showMessage(false, true, 'Successfully created account');
@@ -162,11 +197,15 @@ export default class AuthProvider extends React.Component {
                 navigate('LOGIN_SCREEN');
               })
 
-              .catch(e => {
-                if (__DEV__) console.log(e);
-                this.setState({whichProcessIsHappenningNow: null});
-                this.showMessage(true, true, errorCodeBasedOnFrbCode(e.code));
-              });
+              .catch(e =>
+                this.executeError(
+                  errorCodeBasedOnFrbCode(e.code),
+                  e,
+                  'Register Fnx - Consumer',
+                ),
+              );
+
+            // Login as Farmer
           },
           // LOGOUT function
           updateUserName: async username => {

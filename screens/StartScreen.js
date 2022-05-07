@@ -1,7 +1,6 @@
 import React from 'react';
 import {Image} from 'react-native';
 import Background from '../components/BackGround';
-import Header from '../components/Header';
 import Button from '../components/Button';
 import InfoImage from '../components/InfoImage';
 // import Paragraph from '../components/Paragraph'
@@ -13,7 +12,6 @@ export default function StartScreen({navigation}) {
         source={require('../assets/images/logo.png')}
         style={{marginBottom: 20}}
       />
-      {/* <Header>VEGGIES</Header> */}
 
       <Button
         mode="contained"

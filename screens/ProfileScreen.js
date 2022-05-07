@@ -76,7 +76,7 @@ export default function ProfileScreen() {
             }}>
             <View>
               <Text style={styles.smallDetail}>Today's Sales</Text>
-              <Text style={styles.someStats}>रु 40</Text>
+              <Text style={styles.someStats}>NPR 40</Text>
             </View>
             <View>
               <Text style={styles.smallDetail}>Products Sold</Text>
@@ -88,7 +88,8 @@ export default function ProfileScreen() {
           <FunctionButtons title="SALES" icon="mail" />
           <FunctionButtons title="DISEASE DIAGNOSIS" icon="mail" />
           <FunctionButtons title="SOIL PH CHECK" icon="mail" />
-          <FunctionButtons title="FARM OVERVIEW" icon="mail" />
+          {/* <FunctionButtons title="FARM OVERVIEW" icon="mail" /> */}
+
           <FunctionButtons
             title="LOGOUT"
             icon="logout"
