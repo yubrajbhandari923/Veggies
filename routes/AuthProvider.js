@@ -1,13 +1,19 @@
 import React, {createContext} from 'react';
 // import * as auth from 'firebase/auth';
-import firebase, {auth} from '../firebase';
+import firebase from '../firebase';
 export const AuthContext = createContext();
 import {errorCodeBasedOnFrbCode} from '../helpers/firebaseErrorCodesMessage';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {AccessToken, LoginManager} from 'react-native-fbsdk-next';
 import {NavigationRef} from './Route';
 import {serverURL} from '../data/locations';
-
+import {launchImageLibrary} from 'react-native-image-picker';
+import st, {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+} from 'firebase/storage';
 function navigate(name, params) {
   if (NavigationRef.isReady()) {
     // Perform navigation if the react navigation is ready to handle actions
@@ -77,26 +83,6 @@ export default class AuthProvider extends React.Component {
     } catch (e) {
       return e;
     }
-
-    // return await fetch(`${serverURL}/setadmin`, {
-    //   method: 'POST', // or 'PUT'
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({
-    //     uid: uid,
-    //   }),
-    // })
-    //   .then(res => {
-    //     return res.json().then(json => {
-    //       if (res.ok) {
-    //         return Promise.resolve(json);
-    //       }
-    //       return Promise.reject(json);
-    //     });
-    //   })
-
-    //   .catch(e => e);
   };
 
   // This Function is used to display message
@@ -425,6 +411,63 @@ export default class AuthProvider extends React.Component {
 
                 this.showMessage(true, true, e.message);
               });
+          },
+
+          // Upload New Profile Picture
+          uploadPP: async () => {
+            this.setState({whichProcessIsHappenningNow: 'UPLOAD-PROFILE_PIC'});
+            try {
+              const image = await launchImageLibrary({
+                maxHeight: 500,
+                maxWidth: 500,
+                mediaType: 'photo',
+              });
+
+              if (image?.didCancel) throw 'User cancelled the upload';
+
+              if (image?.errorMessage) throw image.errorMessage;
+              //
+
+              // Convert url to File Object
+              const resp = await fetch(image.assets[0].uri);
+              const blob = await resp.blob();
+              const file = new File([blob], 'profile_pic.jpg', {
+                type: blob.type,
+              });
+
+              const ext = image.assets[0].fileName.substring(
+                image.assets[0].fileName.lastIndexOf('.') + 1,
+                image.assets[0].fileName.length,
+              );
+
+              // const storage = getStorage();
+
+              const storage = getStorage();
+
+              const storageRef = ref(
+                storage,
+                `profilePicture/profilePic-${this.state.user['uid']}.${ext}`,
+              );
+
+              const metadata = {
+                contentType: 'image/jpeg',
+              };
+              const uploadTask = await uploadBytes(storageRef, file, metadata);
+
+              const url = await getDownloadURL(uploadTask.ref);
+
+              await firebase.auth().currentUser.updateProfile({photoURL: url});
+
+              this.setState({whichProcessIsHappenningNow: null});
+
+              this.showMessage(
+                false,
+                true,
+                'Profile Picture Successfully Updated',
+              );
+            } catch (error) {
+              this.executeError(e, e, 'Upload PP Fnx');
+            }
           },
         }}>
         {this.props.children}

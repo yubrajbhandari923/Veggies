@@ -15,6 +15,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntIcons from 'react-native-vector-icons/AntDesign';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import NewsModal from '../components/modals/NewsModal';
+import EditUser from '../screens/EditUser';
 
 export const Stack = createStackNavigator();
 
@@ -24,7 +25,7 @@ export default class FarmerAppStack extends Component {
     return (
       <Provider theme={theme}>
         <Stack.Navigator
-          initialRouteName="TAB"
+          initialRouteName="EDIT_PROFILE-MODAL"
           screenOptions={{
             headerShown: false,
           }}>
@@ -40,6 +41,13 @@ export default class FarmerAppStack extends Component {
               ...TransitionPresets.ModalPresentationIOS,
             }}>
             <Stack.Screen name="NEWS_FEED-MODAL" component={NewsModal} />
+          </Stack.Group>
+
+          <Stack.Group
+            screenOptions={{
+              ...TransitionPresets.ModalPresentationIOS,
+            }}>
+            <Stack.Screen name="EDIT_PROFILE-MODAL" component={EditUser} />
           </Stack.Group>
         </Stack.Navigator>
       </Provider>
