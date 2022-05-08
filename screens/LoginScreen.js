@@ -12,6 +12,7 @@ import Logo from '../components/Logo';
 import Header from '../components/Header';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
+import firebase from '../firebase';
 // import BackButton from '../components/BackButton'
 import {theme} from '../core/theme';
 
@@ -74,36 +75,13 @@ export default function LoginScreen({navigation, route}) {
           provider="GOOGLE"
           process={whichProcessIsHappenningNow}
           disabled={whichProcessIsHappenningNow == 'LOGIN-GOOGLE'}
-          onPress={() =>
-            googleLogin()
-              .then(user => {
-                setWhichProcessIsHappenningNow(null);
-              })
-              .catch(e => {
-                setWhichProcessIsHappenningNow(null);
-                setMessage(true, true, e.message);
-                // if (__DEV__) console.log(e);
-              })
-          }
+          onPress={() => googleLogin()}
         />
         <SocialButtons
           provider="FACEBOOK"
           process={whichProcessIsHappenningNow}
           onPress={() => {
-            facebookLogin()
-              .then(user => {
-                setWhichProcessIsHappenningNow(null);
-                console.log(user);
-              })
-              .catch(e => {
-                setWhichProcessIsHappenningNow(null);
-                setMessage(
-                  true,
-                  true,
-                  e.code ? errorCodeBasedOnFrbCode(e.code) : "Couldn't Login",
-                );
-                if (__DEV__) console.log(e);
-              });
+            facebookLogin();
           }}
         />
       </View>
