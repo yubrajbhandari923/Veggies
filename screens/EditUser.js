@@ -55,7 +55,7 @@ export default function EditUser({navigation}) {
       <EditItems
         title="USERNAME"
         subTitle={user.displayName ? user.displayName : 'NA'}
-        onPress={() => this.props.navigation.navigate('MODAL_EDIT_USERNAME')}
+        onPress={() => navigation.navigate('USERNAME_UPDATE-MODAL')}
       />
       <EditItems
         title="Phone"

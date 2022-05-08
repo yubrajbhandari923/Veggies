@@ -8,6 +8,7 @@ import NotificationScreen from '../screens/NotificationScreen';
 import MessageScreen from '../screens/MessagesScreen';
 import ProductsScreen from '../screens/ProductsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import UsernameUpdate from '../components/modals/UsernameUpdate';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -41,6 +42,10 @@ export default class FarmerAppStack extends Component {
               ...TransitionPresets.ModalPresentationIOS,
             }}>
             <Stack.Screen name="NEWS_FEED-MODAL" component={NewsModal} />
+            <Stack.Screen
+              name="USERNAME_UPDATE-MODAL"
+              component={UsernameUpdate}
+            />
           </Stack.Group>
 
           <Stack.Group

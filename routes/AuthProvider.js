@@ -469,6 +469,28 @@ export default class AuthProvider extends React.Component {
               this.executeError(e, e, 'Upload PP Fnx');
             }
           },
+
+          // Update UserName
+
+          updateUsername: async username => {
+            this.setState({whichProcessIsHappenningNow: 'UPDATE-USERNAME'});
+
+            try {
+              await firebase.auth().currentUser.updateProfile({
+                displayName: username,
+              });
+
+              this.showMessage(false, true, 'Successfully updated username');
+              this.setState({whichProcessIsHappenningNow: null});
+              navigate("EDIT_PROFILE-MODAL")
+            } catch (error) {
+              this.executeError(
+                errorCodeBasedOnFrbCode(error.code),
+                error,
+                'Update Username Fnx',
+              );
+            }
+          },
         }}>
         {this.props.children}
       </AuthContext.Provider>
