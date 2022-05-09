@@ -49,3 +49,19 @@ export const AddressUpdateStyles = StyleSheet.create({
   ...ModalStyle,
   icon: {resizeMode: 'contain', height: 25, width: 25},
 });
+
+export const VerifyEmailStyles = StyleSheet.create({
+  ...ModalStyle,
+  description: {
+    fontFamily: theme.fonts.family.medium2,
+    fontSize: theme.fonts.size.regular,
+    color: theme.colors.primary,
+    textAlign: 'center',
+  },
+  note: {
+    fontFamily: theme.fonts.family.light2,
+    fontSize: theme.fonts.size.small,
+    color: theme.colors.grey,
+    textAlign: 'center',
+  },
+});

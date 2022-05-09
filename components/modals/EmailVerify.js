@@ -1,50 +1,38 @@
 import {View, Text} from 'react-native';
 import React, {useState, useContext} from 'react';
 import ModalLayout from './ModalLayout';
-import {UserUpdateStyles as styles} from '../../styles/ModalStyles';
-import TextInput from '../TextInput';
+import {VerifyEmailStyles as styles} from '../../styles/ModalStyles';
 import Button from '../Button';
 import {AuthContext} from '../../routes/AuthProvider';
-import {phoneValidator} from '../../helpers/validators';
+import {emailValidator} from '../../helpers/validators';
 
 export default function EmailVerify({navigation}) {
-  const {whichProcessIsHappenningNow, updatePhone} = useContext(AuthContext);
-  const [phone, setPhone] = useState({value: '', error: ''});
+  const {whichProcessIsHappenningNow, verifyMail, user} =
+    useContext(AuthContext);
 
-  const sendCode = () => {
-    const phoneError = phoneValidator(phone.value);
-    if (phoneError) {
-      setPhone({...phone, error: phoneError});
-      return;
-    }
+  const [company, domain] = user.auth.currentUser.email.split('@');
+  const securedMail = `${company[0]}${new Array(company.length).join(
+    '*',
+  )}@${domain}`;
 
-    updatePhone(phone.value);
-  };
   return (
-    <ModalLayout>
+    <ModalLayout style={{height: '45%'}}>
       <View style={styles.container}>
-        <Text style={styles.title}> Update Phone Number </Text>
+        <Text style={styles.title}> Verify E-mail</Text>
 
-        <View style={styles.inputContainer}>
-          <TextInput
-            label="Phone Number"
-            returnKeyType="next"
-            value={phone.value}
-            onChangeText={text => setPhone({value: text, error: ''})}
-            error={phone.error}
-            errorText={phone.error}
-            autoCapitalize="none"
-            keyboardType="phone-pad"
-            initialText="+977"
-          />
-        </View>
+        <Text style={styles.description}>
+          A verification page will be send to {securedMail}
+        </Text>
+
+        <Text style={styles.note}>Note: Check spam folder</Text>
+
         <Button
           mode="contained"
-          onPress={sendCode}
+          onPress={verifyMail}
           style={{marginTop: 24}}
-          disabled={whichProcessIsHappenningNow == 'UPDATE-PHONE'}
-          loading={whichProcessIsHappenningNow == 'UPDATE-PHONE'}>
-          Update
+          disabled={whichProcessIsHappenningNow == 'VERIFY-EMAIL'}
+          loading={whichProcessIsHappenningNow == 'VERIFY-EMAIL'}>
+          SEND MAIL
         </Button>
       </View>
     </ModalLayout>

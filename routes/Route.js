@@ -23,14 +23,8 @@ import firebase from '../firebase';
 // For white background across the App
 
 const Route = () => {
-  const {
-    user,
-    setUser,
-    whichAuthentication,
-    setMode,
-    mode,
-    whichProcessIsHappenningNow,
-  } = useContext(AuthContext);
+  const {user, setUser, whichAuthentication, setMode, mode} =
+    useContext(AuthContext);
   const [isLoading, setLoading] = useState(true);
 
   // Configure Google Singin and FB LOGIN When Component Mounts

@@ -579,6 +579,28 @@ export default class AuthProvider extends React.Component {
               );
             }
           },
+
+          verifyMail: async () => {
+            this.setState({whichProcessIsHappenningNow: 'VERIFY-EMAIL'});
+            try {
+              await firebase.auth().currentUser.sendEmailVerification();
+
+              this.setState({whichProcessIsHappenningNow: null});
+
+              this.showMessage(
+                false,
+                true,
+                'Successfully sent verification email',
+              );
+              navigate('EDIT_PROFILE-MODAL');
+            } catch (error) {
+              this.executeError(
+                errorCodeBasedOnFrbCode(error?.code),
+                error,
+                'Verify Mail FNX',
+              );
+            }
+          },
         }}>
         {this.props.children}
       </AuthContext.Provider>
