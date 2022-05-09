@@ -1,6 +1,7 @@
 import React from 'react';
 import {TouchableOpacity, Text, View} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/EvilIcons';
+import {HeaderBackButtonStyles as styles} from '../styles/globalStyles';
 
 // This fucntion accepts a title prop that is shown
 // in that title we place a back button
@@ -11,22 +12,13 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 const HeaderForBackButton = ({title, backButtonPressFunction}) => {
   return (
     /* Header to Go Back to Login */
-    <View
-      style={{
-        height: 50,
-        width: '100%',
-        justifyContent: 'center',
-      }}>
+    <View style={styles.container}>
       <TouchableOpacity
-        style={{
-          flexDirection: 'row',
-          padding: 10,
-          alignItems: 'center',
-        }}
+        style={styles.button}
         activeOpacity={0.8}
         onPress={() => backButtonPressFunction()}>
-        <Icon name="angle-left" size={22} color="#36a17bd9" />
-        <Text style={{marginLeft: 10, color: '#36a17bd9'}}>{title}</Text>
+        <Icon name="chevron-left" style={styles.icon} size={20} />
+        <Text style={styles.text}>{title}</Text>
       </TouchableOpacity>
     </View>
   );

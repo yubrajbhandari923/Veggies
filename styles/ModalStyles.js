@@ -28,6 +28,7 @@ const ModalStyle = StyleSheet.create({
     fontFamily: theme.fonts.family.medium2,
     fontSize: theme.fonts.size.large,
     color: theme.colors.primary,
+    textAlign: 'center',
   },
   container: {
     paddingHorizontal: 20,
@@ -35,11 +36,16 @@ const ModalStyle = StyleSheet.create({
     alignItems: 'center',
   },
   inputContainer: {
-    marginTop: '20%',
+    marginTop: 10,
     width: '100%',
   },
 });
 
 export const UserUpdateStyles = StyleSheet.create({
   ...ModalStyle,
+});
+
+export const AddressUpdateStyles = StyleSheet.create({
+  ...ModalStyle,
+  icon: {resizeMode: 'contain', height: 25, width: 25},
 });

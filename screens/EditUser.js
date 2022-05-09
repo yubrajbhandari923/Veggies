@@ -1,14 +1,15 @@
 import {View, Text, ScrollView, Pressable, Image} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {AuthContext} from '../routes/AuthProvider';
 import {EditProfileStyle as styles} from '../styles/ProfileStyles';
 import HeaderForBackButton from '../components/HeaderForBackButton';
 import Button from '../components/Button';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
+import firebase from '../firebase';
 
 export default function EditUser({navigation}) {
-  const {user, address, uploadPP, whichProcessIsHappenningNow} =
+  const {user, uploadPP, whichProcessIsHappenningNow} =
     React.useContext(AuthContext);
 
   return (
@@ -60,12 +61,12 @@ export default function EditUser({navigation}) {
       <EditItems
         title="Phone"
         subTitle={user.phoneNumber ? user.phoneNumber : 'NA'}
-        onPress={() => this.props.navigation.navigate('MODAL_EDIT_PHONE')}
+        onPress={() => navigation.navigate('PHONE_UPDATE-MODAL')}
       />
       <EditItems
         title="Address"
-        subTitle={address ? address['street'] : 'NA'}
-        onPress={() => this.props.navigation.navigate('MODAL_EDIT_ADDRESS')}
+        subTitle={user.address ? user.address['street'] : 'NA'}
+        onPress={() => navigation.navigate('ADDRESS_UPDATE-MODAL')}
       />
 
       <EditItems
@@ -80,7 +81,7 @@ export default function EditUser({navigation}) {
         onPress={
           user.emailVerified
             ? null
-            : () => this.props.navigation.navigate('MODAL_EDIT_ADDRESS')
+            : () => navigation.navigate('EMAIL_VERIFY-MODAL')
         }
       />
     </ScrollView>

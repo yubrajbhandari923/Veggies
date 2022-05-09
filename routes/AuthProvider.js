@@ -8,12 +8,14 @@ import {AccessToken, LoginManager} from 'react-native-fbsdk-next';
 import {NavigationRef} from './Route';
 import {serverURL} from '../data/locations';
 import {launchImageLibrary} from 'react-native-image-picker';
-import st, {
-  getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL,
-} from 'firebase/storage';
+import {getStorage, ref, uploadBytes, getDownloadURL} from 'firebase/storage';
+import Geolocation from '@react-native-community/geolocation';
+
+Geolocation.setRNConfiguration({
+  authorizationLevel: 'whenInUse',
+  // skipPermissionRequests: false,
+});
+
 function navigate(name, params) {
   if (NavigationRef.isReady()) {
     // Perform navigation if the react navigation is ready to handle actions
@@ -45,6 +47,9 @@ export default class AuthProvider extends React.Component {
         visible: false,
         message: null,
       },
+
+      // Store the current location cordaintes
+      coordinates: {coords: null, error: null},
     };
   }
 
@@ -85,6 +90,24 @@ export default class AuthProvider extends React.Component {
     }
   };
 
+  // To get location as coordinates
+  setGeoLocationCoordinates = async () => {
+    let coordinate;
+    const geo = Geolocation.getCurrentPosition(
+      position => {
+        this.setState({coordinates: {coords: position.coords, error: null}});
+      },
+      error => {
+        // See error code charts below.
+        this.setState({coords: null, error: error.message});
+      },
+    );
+  };
+
+  // When the component mounts then set the geoLocation
+  componentDidMount() {
+    this.setGeoLocationCoordinates();
+  }
   // This Function is used to display message
   render() {
     return (
@@ -482,12 +505,77 @@ export default class AuthProvider extends React.Component {
 
               this.showMessage(false, true, 'Successfully updated username');
               this.setState({whichProcessIsHappenningNow: null});
-              navigate("EDIT_PROFILE-MODAL")
+              navigate('EDIT_PROFILE-MODAL');
             } catch (error) {
               this.executeError(
                 errorCodeBasedOnFrbCode(error.code),
                 error,
                 'Update Username Fnx',
+              );
+            }
+          },
+
+          updatePhone: async phone => {
+            phone = '+977' + phone;
+
+            this.setState({whichProcessIsHappenningNow: 'UPDATE-PHONE'});
+
+            try {
+              const response = await fetch(`${serverURL}/updatePhone`, {
+                body: JSON.stringify({uid: this.state.user.uid, phone: phone}),
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              });
+
+              const json = await response.json();
+              if (!response.ok) throw json;
+
+              this.setState({whichProcessIsHappenningNow: null});
+              this.showMessage(
+                false,
+                true,
+                'Successfully updated phone number',
+              );
+              navigate('EDIT_PROFILE-MODAL');
+            } catch (error) {
+              this.executeError(
+                errorCodeBasedOnFrbCode(error?.code),
+                error,
+                'Update Phone Fnx',
+              );
+            }
+          },
+
+          updateAddress: async address => {
+            this.setState({whichProcessIsHappenningNow: 'UPDATE-ADDRESS'});
+
+            try {
+              address['uid'] = this.state.user.uid;
+
+              address['geoLocation'] = this.state.coordinates;
+
+              const response = await fetch(`${serverURL}/updateAddress`, {
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(address),
+                method: 'POST',
+              });
+
+              const json = await response.json();
+
+              if (!response.ok) throw json;
+
+              this.setState({whichProcessIsHappenningNow: null});
+              this.showMessage(false, true, 'Successfully updated address');
+              navigate('EDIT_PROFILE-MODAL');
+            } catch (error) {
+              this.executeError(
+                errorCodeBasedOnFrbCode(error.code),
+                error,
+                'Update Address FNX',
               );
             }
           },

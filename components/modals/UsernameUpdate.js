@@ -21,7 +21,7 @@ export default function UsernameUpdate({navigation}) {
     updateUsername(username.value);
   };
   return (
-    <ModalLayout>
+    <ModalLayout style={{height: '60%'}}>
       <View style={styles.container}>
         <Text style={styles.title}> Update Username </Text>
 

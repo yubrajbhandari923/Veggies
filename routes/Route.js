@@ -18,6 +18,7 @@ import {Settings} from 'react-native-fbsdk-next';
 export const NavigationRef = createNavigationContainerRef();
 import ActionNotification from '../components/MessageSnackBar';
 import AsyncStorage from '@react-native-community/async-storage';
+import firebase from '../firebase';
 
 // For white background across the App
 
@@ -54,7 +55,18 @@ const Route = () => {
       // console.log(user);
       if (user) {
         // User is signed in
+        // Also set the address
         setUser(user);
+        firebase
+          .auth()
+          .currentUser.getIdTokenResult(true)
+          .then(tokenResult => {
+            let address = tokenResult.claims?.['address'];
+            setUser({...user, address: address});
+          })
+          .catch(e => {
+            if (__DEV__) console.log(e);
+          });
       } else {
         // User is signed out
         setUser(null);

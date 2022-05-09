@@ -21,7 +21,7 @@ const firebaseConfig = {
   projectId: 'veggies-efbe8',
   storageBucket: 'veggies-efbe8.appspot.com',
   messagingSenderId: '397799283843',
-  appId: '1:397799283843:web:239c649ccaf672bd0f8fb6',
+  appId: '1:397799283843:web:239c649ccaf672bd0f8fb6'
 };
 
 // Initialize Firebase

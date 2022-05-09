@@ -9,6 +9,9 @@ import MessageScreen from '../screens/MessagesScreen';
 import ProductsScreen from '../screens/ProductsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import UsernameUpdate from '../components/modals/UsernameUpdate';
+import PhoneUpdate from '../components/modals/PhoneUpdate';
+import AddressUpdate from '../components/modals/AddressUpdate';
+import EmailVerify from '../components/modals/EmailVerify';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -46,6 +49,12 @@ export default class FarmerAppStack extends Component {
               name="USERNAME_UPDATE-MODAL"
               component={UsernameUpdate}
             />
+            <Stack.Screen name="PHONE_UPDATE-MODAL" component={PhoneUpdate} />
+            <Stack.Screen
+              name="ADDRESS_UPDATE-MODAL"
+              component={AddressUpdate}
+            />
+            <Stack.Screen name="EMAIL_VERIFY-MODAL" component={EmailVerify} />
           </Stack.Group>
 
           <Stack.Group
