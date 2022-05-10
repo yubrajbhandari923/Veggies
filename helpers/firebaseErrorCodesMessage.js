@@ -63,8 +63,20 @@ export const errorCodeBasedOnFrbCode = code => {
       message = 'The code is invalid';
       break;
 
+    case 'auth/user-not-admin':
+      message = `This account isn't registered as a farmer`;
+      break;
+
+    case 'auth/user-not-consumer':
+      message = `This account isn't registered as a consumer`;
+      break;
+
+      case "auth/user-cancelled":
+        message = `User Cancelled the Process`
+        break
+
     default:
-      message = 'Please enter valid credentials';
+      message = 'Sorry! There was an error';
       break;
   }
   return message;

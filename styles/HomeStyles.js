@@ -4,7 +4,6 @@ export const NewsFeedContainerStyles = StyleSheet.create({
   buttonContainer: {
     width: '95%',
     backgroundColor: '#fff',
-    // height: "auto",
     borderRadius: 10,
     alignSelf: 'center',
     elevation: 0.7,
@@ -15,14 +14,16 @@ export const NewsFeedContainerStyles = StyleSheet.create({
     width: '100%',
     height: '100%',
     backgroundColor: '#fff',
-    // paddingHorizontal: 15,
     paddingBottom: 10,
   },
   dishTitleContainer: {paddingVertical: 10},
-  dishTitleText: {fontSize: 17, fontFamily: theme.fonts.medium.fontFamily},
+  dishTitleText: {
+    fontSize: theme.fonts.size.medium,
+    fontFamily: theme.fonts.family.medium2,
+  },
   dishDescriptionText: {
     fontSize: 14,
-    fontFamily: theme.fonts.medium.fontFamily,
+    fontFamily: theme.fonts.family.light2,
   },
 
   cartButtonContainer: {
@@ -53,7 +54,11 @@ export const NewsFeedContainerStyles = StyleSheet.create({
     paddingVertical: 10,
   },
   dishFeatureBox: {backgroundColor: '#eeeeee6b'},
-  dishFeatureText: {fontFamily: 'Nunito-Medium', fontSize: 13},
+  dishFeatureText: {
+    fontFamily: theme.fonts.family.medium2,
+    fontSize: 13,
+    color: theme.colors.grey,
+  },
 });
 export const SkeletonStyles = StyleSheet.create({
   buttonContainer: {
@@ -101,11 +106,6 @@ export const NewsModalStyles = StyleSheet.create({
 
     position: 'absolute',
   },
-  stickyHeaderContainer: {
-    backgroundColor: '#fff',
-    paddingVertical: 15,
-    width: '100%',
-  },
   smallBar: {
     height: 4,
     width: 90,
@@ -113,47 +113,11 @@ export const NewsModalStyles = StyleSheet.create({
     borderRadius: 50,
     alignSelf: 'center',
   },
-  sliderContainer: {
-    width: '100%',
-    height: 250,
-    marginTop: 10,
-    borderRadius: 8,
-    overflow: 'hidden',
-    elevation: 1,
-  },
-  dishTitleContainer: {
-    paddingVertical: 10,
-    alignItems: 'center',
-  },
-  dishTitleText: {
-    fontSize: 22,
-    fontFamily: 'OpenSans-Regular',
-    color: '#000',
-  },
-  dishDescriptionText: {fontSize: 14, fontFamily: 'OpenSans-Regular'},
-  cartContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  cartButtonContainer: {},
-  cartIconButton: {
-    height: 65,
-    width: 65,
-    backgroundColor: '#eeeeee6b',
-    borderRadius: 30,
-  },
-  priceContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 10,
-  },
-  starContainer: {
-    flexDirection: 'row',
-  },
-  priceText: {
-    fontSize: 18,
-    fontFamily: 'OpenSans-Regular',
+  webView: {
+    flex: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 20,
+    backgroundColor: '#fff',
+    marginTop: 20,
   },
 });

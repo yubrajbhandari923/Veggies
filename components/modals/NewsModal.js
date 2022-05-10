@@ -41,13 +41,7 @@ export default class NewsModal extends Component {
             pullToRefreshEnabled={true}
             startInLoadingState={true}
             renderLoading={() => <Loading />}
-            style={{
-              flex: 1,
-              paddingHorizontal: 10,
-              paddingVertical: 20,
-              backgroundColor: '#fff',
-              marginTop: 20,
-            }}
+            style={styles.webView}
           />
         </ScrollView>
       </View>

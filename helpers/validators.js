@@ -1,7 +1,7 @@
 export function emailValidator(email) {
   const re = /\S+@\S+\.\S+/;
   if (!email) return "Email can't be empty.";
-  if (!re.test(email)) return 'Ooops! We need a valid email address.';
+  if (!re.test(email)) return 'Please enter a valid email address.';
   return '';
 }
 
@@ -14,5 +14,6 @@ export function passwordValidator(password) {
 
 export function nameValidator(name) {
   if (!name) return "Name can't be empty.";
+  if (name.length < 4) return 'Name must be at least 4 characters long';
   return '';
 }

@@ -1,8 +1,9 @@
 import {Snackbar} from 'react-native-paper';
 import {Text, View, Image} from 'react-native';
 import React, {useContext} from 'react';
-import {SnackBarStyles as styles} from '../styles/SnackBarStyles';
+import {SnackBarStyles as styles} from '../styles/globalStyles';
 import {AuthContext} from '../routes/AuthProvider';
+import {theme} from '../core/theme';
 
 export default function ActionNotification({...props}) {
   const {setMessage, message} = useContext(AuthContext);
@@ -11,16 +12,15 @@ export default function ActionNotification({...props}) {
     <Snackbar
       duration={2200}
       style={{
-        backgroundColor: message.error ? '#772121' : '#297558',
+        backgroundColor: message.error
+          ? theme.colors.error
+          : theme.colors.success,
         ...styles.snackbarStyle,
       }}
       visible={message.visible}
-      theme={{
-        colors: {accent: '#fff'},
-      }}
       onDismiss={() => setMessage(false, false, null)}
       action={{
-        label: 'DISMISS',
+        label: <Text style={styles.dismiss}>DISMISS</Text>,
         onPress: () => {
           setMessage(false, false, null);
         },

@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useState, useContext} from 'react';
+import {View, TouchableOpacity} from 'react-native';
 import {Text} from 'react-native-paper';
 import Background from '../components/BackGround';
 import Logo from '../components/Logo';
@@ -7,35 +7,44 @@ import Header from '../components/Header';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
 // import BackButton from '../components/BackButton';
-import {theme} from '../core/theme';
-import {emailValidator} from '../helpers/emailValidator';
-import {passwordValidator} from '../helpers/passwordValidator';
-import {nameValidator} from '../helpers/nameValidator';
+import {
+  emailValidator,
+  passwordValidator,
+  nameValidator,
+} from '../helpers/validators';
+import {AuthContext} from '../routes/AuthProvider';
+import {registerStyles as styles} from '../styles/AuthStyles';
+import SwitchMode from '../components/switchMode';
 
 export default function RegisterScreen({navigation}) {
-  const [name, setName] = useState({value: '', error: ''});
-  const [email, setEmail] = useState({value: '', error: ''});
-  const [password, setPassword] = useState({value: '', error: ''});
+  const {register, whichProcessIsHappenningNow, mode} = useContext(AuthContext);
+  const [name, setName] = useState({value: 'Ronoroa Zoro', error: ''});
+  const [email, setEmail] = useState({
+    value: 'anup8eguy@gmail.com',
+    error: '',
+  });
+  const [password, setPassword] = useState({value: 'Bhusal12', error: ''});
 
   const onSignUpPressed = () => {
-    //     const nameError = nameValidator(name.value)
-    //     const emailError = emailValidator(email.value)
-    //     const passwordError = passwordValidator(password.value)
-    //     if (emailError || passwordError || nameError) {
-    //       setName({ ...name, error: nameError })
-    //       setEmail({ ...email, error: emailError })
-    //       setPassword({ ...password, error: passwordError })
-    //       return
-    //     }
-    //     navigation.reset({
-    //       index: 0,
-    //       routes: [{ name: 'Dashboard' }],
-    //     })
+    const emailError = emailValidator(email.value);
+    const passwordError = passwordValidator(password.value);
+    const nameError = nameValidator(name.value);
+
+    if (emailError || passwordError || nameError) {
+      setEmail({...email, error: emailError});
+      setPassword({...password, error: passwordError});
+      setName({...name, error: nameError});
+      return;
+    }
+
+    register(name.value, email.value, password.value);
   };
 
   return (
     <Background>
       {/* <BackButton goBack={navigation.goBack} /> */}
+      <SwitchMode navigation={navigation} referer="register"/>
+
       <Logo />
       <Header>Create Account</Header>
       <TextInput
@@ -70,28 +79,25 @@ export default function RegisterScreen({navigation}) {
       <Button
         mode="contained"
         onPress={onSignUpPressed}
-        style={{marginTop: 24}}>
+        style={{marginTop: 24}}
+        disabled={whichProcessIsHappenningNow == 'REGISTER-EMAIL'}
+        loading={whichProcessIsHappenningNow == 'REGISTER-EMAIL'}>
         Sign Up
       </Button>
       <View style={styles.row}>
-        <Text>Already have an account? </Text>
-        <TouchableOpacity onPress={() => navigation.replace('LOGIN_SCREEN')}>
+        <Text style={styles.instead}>Already have an account? </Text>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.replace(
+              mode == 'FARMER'
+                ? 'LOGIN_SCREEN-FARMER'
+                : 'LOGIN_SCREEN-CONSUMER',
+              {mode: null},
+            )
+          }>
           <Text style={styles.link}>Login</Text>
         </TouchableOpacity>
       </View>
     </Background>
   );
 }
-
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    marginTop: 4,
-    alignItems: 'center',
-  },
-  link: {
-    color: theme.colors.primary,
-    fontSize: 16,
-    marginLeft: 10,
-  },
-});

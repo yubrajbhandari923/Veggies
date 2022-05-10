@@ -4,16 +4,34 @@ import firebase, {auth} from '../firebase';
 export const AuthContext = createContext();
 import {errorCodeBasedOnFrbCode} from '../helpers/firebaseErrorCodesMessage';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {AccessToken, LoginManager} from 'react-native-fbsdk-next';
+import {NavigationRef} from './Route';
+import {serverURL} from '../data/locations';
+
+function navigate(name, params) {
+  if (NavigationRef.isReady()) {
+    // Perform navigation if the react navigation is ready to handle actions
+    NavigationRef.navigate(name, params);
+  } else {
+    // You can decide what to do if react navigation is not ready
+    // You can ignore this, or add these actions to a queue you can call later
+  }
+}
 export default class AuthProvider extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      // Which mode are we logged in with, either farmer or consumer
+      mode: 'FARMER',
+      setMode: mode => this.setState({mode: mode}),
       // Stores about which process is happenning now
       whichProcessIsHappenningNow: null,
       // Stores the user object from firebase
       user: null,
 
       firstNews: null,
+
+      whichAuthentication: 'LOGIN', //To check whether it is login or register because this fucking firebase automatically authenticates on creating new user
 
       // Stores the message object that is displayed in snackbar
       message: {
@@ -29,13 +47,69 @@ export default class AuthProvider extends React.Component {
   showMessage = (e, v, m) =>
     this.setState({message: {error: e, visible: v, message: m}});
 
+  executeError = (error, rawError, origin) => {
+    this.setState({whichProcessIsHappenningNow: null});
+    this.showMessage(true, true, error);
+    if (__DEV__) {
+      console.log(`From ${origin}:`);
+      console.log(rawError);
+    }
+  };
+
+  // To set the admin
+  setAdminClaim = async uid => {
+    try {
+      const claim = await fetch(`${serverURL}/setadmin`, {
+        method: 'POST', // or 'PUT'
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          uid: uid,
+        }),
+      });
+
+      const res = await claim.json();
+
+      if (!res.ok) throw res;
+
+      return res;
+    } catch (e) {
+      return e;
+    }
+
+    // return await fetch(`${serverURL}/setadmin`, {
+    //   method: 'POST', // or 'PUT'
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     uid: uid,
+    //   }),
+    // })
+    //   .then(res => {
+    //     return res.json().then(json => {
+    //       if (res.ok) {
+    //         return Promise.resolve(json);
+    //       }
+    //       return Promise.reject(json);
+    //     });
+    //   })
+
+    //   .catch(e => e);
+  };
+
   // This Function is used to display message
   render() {
     return (
       <AuthContext.Provider
         value={{
+          mode: this.state.mode,
+          setMode: value => this.setState({mode: value}), //Should be either FARMER or CONSUMERF
           user: this.state.user,
           setUser: userObj => this.setState({user: userObj}),
+
+          whichAuthentication: this.state.whichAuthentication,
 
           whichProcessIsHappenningNow: this.state.whichProcessIsHappenningNow,
           setWhichProcessIsHappenningNow: value =>
@@ -52,57 +126,238 @@ export default class AuthProvider extends React.Component {
           login: (email, password) => {
             // First Let the Context know that email login is happenning
             this.setState({whichProcessIsHappenningNow: 'LOGIN-EMAIL'});
+            this.setState({whichAuthentication: 'LOGIN'});
 
             firebase
               .auth()
               .signInWithEmailAndPassword(email, password)
-              .then(value => {
+              .then(record => {
                 // Now the login is complete, set the happenning proces
                 this.setState({whichProcessIsHappenningNow: null});
-                //
-                // if (__DEV__) {
-                //   console.log(
-                //     'From Login Function:: -> Successfully Logged IN',
-                //   );
-                // }
+                return firebase.auth().currentUser.getIdTokenResult();
               })
-              .catch(error => {
-                this.setState({whichProcessIsHappenningNow: null});
+              .then(idTokenResult => {
+                // If user is admin and chose farmer  mode or user is not admin and chose consumer mode, then everything is correct
+                if (
+                  (idTokenResult.claims.admin && this.state.mode == 'FARMER') ||
+                  (!idTokenResult.claims.admin && this.state.mode == 'CONSUMER')
+                )
+                  return;
+                // If user choses consumer mode but the is admin
 
-                // console.log(errorCodeBasedOnFrbCode(error.code));
-
-                this.showMessage(
-                  true,
-                  true,
+                if (
+                  idTokenResult.claims.admin &&
+                  this.state.mode == 'CONSUMER'
+                ) {
+                  firebase.auth().signOut();
+                  throw {code: 'auth/user-not-consumer'};
+                } else {
+                  firebase.auth().signOut();
+                  throw {code: 'auth/user-not-admin'};
+                }
+              })
+              .catch(error =>
+                this.executeError(
                   errorCodeBasedOnFrbCode(error.code),
-                );
-              });
+                  error,
+                  'Login Fnx',
+                ),
+              );
           },
 
           googleLogin: async () => {
             this.setState({whichProcessIsHappenningNow: 'LOGIN-GOOGLE'});
+            this.setState({whichAuthentication: 'LOGIN'});
+
             // Get the users ID token
+            try {
+              const {idToken} = await GoogleSignin.signIn();
 
-            const {idToken} = await GoogleSignin.signIn();
+              // Create a Google credential with the token
+              const googleCredential =
+                firebase.auth.GoogleAuthProvider.credential(idToken);
 
-            // Create a Google credential with the token
-            const googleCredential =
-              firebase.auth.GoogleAuthProvider.credential(idToken);
+              // Sign-in the user with the credential
+              const googleLogout = async () => {
+                this.setState({whichProcessIsHappenningNow: null});
 
-            // Sign-in the user with the credential
-            return await firebase.auth().signInWithCredential(googleCredential);
+                await GoogleSignin.revokeAccess();
+                await GoogleSignin.signOut();
+                await firebase.auth().signOut();
+              };
+
+              let user = await firebase
+                .auth()
+                .signInWithCredential(googleCredential);
+
+              if (
+                user.additionalUserInfo['isNewUser'] &&
+                this.state.mode == 'FARMER'
+              )
+                await this.setAdminClaim(user.user.uid);
+
+              let idTokenResult = await firebase
+                .auth()
+                .currentUser.getIdTokenResult(true);
+
+              console.log(idTokenResult.claims);
+
+              this.setState({whichProcessIsHappenningNow: null});
+
+              // If user is admin and chose farmer  mode or user is not admin and chose consumer mode, then everything is correct
+              if (
+                (idTokenResult.claims.admin && this.state.mode == 'FARMER') ||
+                (!idTokenResult.claims.admin && this.state.mode == 'CONSUMER')
+              )
+                return;
+              // If user choses consumer mode but the is admin or similar situations
+              if (idTokenResult.claims.admin && this.state.mode == 'CONSUMER') {
+                await googleLogout();
+                throw {
+                  code: 'auth/user-not-consumer',
+                  message: `This account isn't registered as consumer`,
+                };
+              } else {
+                await googleLogout();
+                throw {
+                  code: 'auth/user-not-admin',
+                  message: `This account isn't registered as farmer`,
+                };
+              }
+            } catch (e) {
+              this.executeError(
+                errorCodeBasedOnFrbCode(e.code),
+                e,
+                'Google Login Fnx',
+              );
+            }
           },
 
           // Facebook Login
-          facebookLogin: () => {
-            console.log(user);
-            console.log('DEVELOPMENT PHASE');
+          facebookLogin: async () => {
+            // Attempt login with permissions
+
+            this.setState({whichProcessIsHappenningNow: 'LOGIN-FACEBOOK'});
+            this.setState({whichAuthentication: 'LOGIN'});
+
+            try {
+              const result = await LoginManager.logInWithPermissions([
+                'public_profile',
+                'email',
+              ]);
+
+              if (result.isCancelled) {
+                throw {code: 'auth/user-cancelled'};
+              }
+
+              // Once signed in, get the users AccesToken
+              const data = await AccessToken.getCurrentAccessToken();
+
+              if (!data) {
+                throw 'Something went wrong obtaining access token';
+              }
+
+              // Create a Firebase credential with the AccessToken
+              const facebookCredential =
+                firebase.auth.FacebookAuthProvider.credential(data.accessToken);
+
+              // Sign-in the user with the credential
+              const user = await firebase
+                .auth()
+                .signInWithCredential(facebookCredential);
+
+              if (
+                user.additionalUserInfo['isNewUser'] &&
+                this.state.mode == 'FARMER'
+              )
+                await this.setAdminClaim(user.user.uid);
+
+              const idTokenResult = await firebase
+                .auth()
+                .currentUser.getIdTokenResult(true);
+
+              this.setState({whichProcessIsHappenningNow: null});
+
+              // If user is admin and chose farmer  mode or user is not admin and chose consumer mode, then everything is correct
+              if (
+                (idTokenResult.claims.admin && this.state.mode == 'FARMER') ||
+                (!idTokenResult.claims.admin && this.state.mode == 'CONSUMER')
+              )
+                return;
+              // If user choses consumer mode but the is admin or similar situations
+              if (idTokenResult.claims.admin && this.state.mode == 'CONSUMER') {
+                await firebase.auth().signOut();
+                throw {
+                  code: 'auth/user-not-consumer',
+                  message: `This account isn't registered as consumer`,
+                };
+              } else {
+                await firebase.auth().signOut();
+                throw {
+                  code: 'auth/user-not-admin',
+                  message: `This account isn't registered as farmer`,
+                };
+              }
+            } catch (e) {
+              this.executeError(
+                errorCodeBasedOnFrbCode(e.code),
+                e,
+                'Facebook Login Fnx',
+              );
+            }
+          },
+
+          // Register Account from Email
+          register: async (username, email, password) => {
+            this.setState({whichProcessIsHappenningNow: 'REGISTER-EMAIL'});
+            this.setState({whichAuthentication: 'REGISTER'});
+
+            try {
+              // First create account and then update username
+
+              const userAccount = await firebase
+                .auth()
+                .createUserWithEmailAndPassword(email, password);
+
+              await firebase.auth().currentUser.updateProfile({
+                displayName: username,
+              });
+
+              // Set admin claims for farmer
+              if (this.state.mode == 'FARMER')
+                await this.setAdminClaim(userAccount.user.uid);
+
+              await firebase.auth().signOut();
+
+              this.showMessage(false, true, 'Successfully created account');
+              this.setState({whichProcessIsHappenningNow: null});
+
+              navigate(
+                this.state.mode == 'FARMER'
+                  ? 'LOGIN_SCREEN-FARMER'
+                  : 'LOGIN_SCREEN-CONSUMER',
+              );
+            } catch (e) {
+              this.executeError(
+                errorCodeBasedOnFrbCode(e.code),
+                e,
+                'Register Fnx - Consumer',
+              );
+            }
+
+            // Login as Farmer
           },
           // LOGOUT function
+          updateUserName: async username => {
+            // If the provided username isnt null, undefined or less than 6 charactes , then its invalid
+            this.setState({whichProcessIsHappenningNow: 'UPDATE_USERNAME'});
+            await firebase
+              .auth()
+              .currentUser.updateProfile({displayName: username});
+          },
 
           logout: () => {
-            console.log(this.state.user.providerData.providerId);
-            if (this.state.user.providerData.providerId == 'google.com') {
+            if (this.state.user.providerData[0]['providerId'] == 'google.com') {
               GoogleSignin.revokeAccess();
               GoogleSignin.signOut();
             }
@@ -147,6 +402,29 @@ export default class AuthProvider extends React.Component {
             );
 
             return queryPassedObjects;
+          },
+
+          // Reset Passowrd
+          resetPassword: email => {
+            this.setState({whichProcessIsHappenningNow: 'RESET-PASSWORD'});
+            firebase
+              .auth()
+              .sendPasswordResetEmail(email)
+              .then(v => {
+                this.setState({whichProcessIsHappenningNow: null});
+                console.log(v);
+                this.showMessage(
+                  false,
+                  true,
+                  'Successfully send password reset email',
+                );
+              })
+              .catch(e => {
+                if (__DEV__) console.log(e);
+                this.setState({whichProcessIsHappenningNow: null});
+
+                this.showMessage(true, true, e.message);
+              });
           },
         }}>
         {this.props.children}

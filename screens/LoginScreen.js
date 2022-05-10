@@ -1,7 +1,6 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {
   TouchableOpacity,
-  StyleSheet,
   View,
   Pressable,
   Image,
@@ -13,19 +12,27 @@ import Logo from '../components/Logo';
 import Header from '../components/Header';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
+import firebase from '../firebase';
 // import BackButton from '../components/BackButton'
 import {theme} from '../core/theme';
 
 import {emailValidator, passwordValidator} from '../helpers/validators';
 import {AuthContext} from '../routes/AuthProvider';
+import {errorCodeBasedOnFrbCode} from '../helpers/firebaseErrorCodesMessage';
+import SwitchMode from '../components/switchMode';
+import {loginScreenStyles as styles} from '../styles/AuthStyles';
+import AsyncStorage from '@react-native-community/async-storage';
 
-export default function LoginScreen({navigation}) {
+export default function LoginScreen({navigation, route}) {
   const {
     googleLogin,
     login,
     whichProcessIsHappenningNow,
     setWhichProcessIsHappenningNow,
     setMessage,
+    facebookLogin,
+    mode,
+    setMode,
   } = useContext(AuthContext);
 
   const [email, setEmail] = useState({value: 'anup8eguy@gmail.com', error: ''});
@@ -45,38 +52,37 @@ export default function LoginScreen({navigation}) {
     login(email.value, password.value);
   };
 
+  // When the component mounts set the mode
+  useEffect(() => {
+    if (route.params?.mode) {
+      setMode(route.params.mode);
+      AsyncStorage.setItem('mode', route.params.mode);
+    }
+  }, []);
+
+  // When the component mounts, lets decied whether he is a farmer or a consumer
   return (
     <Background>
-      <Logo />
+      <SwitchMode navigation={navigation} referer="login" />
+      <Logo style={{marginBottom: 20}} />
 
       {/*  */}
 
-      <Header>LOGIN</Header>
+      {/* <Header>LOGIN</Header> */}
 
       <View style={styles.socialContainer}>
         <SocialButtons
           provider="GOOGLE"
           process={whichProcessIsHappenningNow}
-          onPress={() =>
-            googleLogin()
-              .then(user => {
-                setWhichProcessIsHappenningNow(null);
-                console.log(user);
-              })
-              .catch(e => {
-                setWhichProcessIsHappenningNow(null);
-                setMessage(
-                  true,
-                  true,
-                  e.message
-                );
-                // if (__DEV__) console.log(e);
-              })
-          }
+          disabled={whichProcessIsHappenningNow == 'LOGIN-GOOGLE'}
+          onPress={() => googleLogin()}
         />
         <SocialButtons
           provider="FACEBOOK"
           process={whichProcessIsHappenningNow}
+          onPress={() => {
+            facebookLogin();
+          }}
         />
       </View>
 
@@ -109,7 +115,7 @@ export default function LoginScreen({navigation}) {
       {/* Forgot Password Here */}
       <View style={styles.forgotPassword}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('ResetPasswordScreen')}>
+          onPress={() => navigation.navigate('FORGOT_PASSWORD_SCREEN')}>
           <Text style={styles.forgot}>Forgot your password?</Text>
         </TouchableOpacity>
       </View>
@@ -123,8 +129,16 @@ export default function LoginScreen({navigation}) {
         Login
       </Button>
       <View style={styles.row}>
-        <Text>Don't have an account?</Text>
-        <TouchableOpacity onPress={() => navigation.replace('REGISTER_SCREEN')}>
+        <Text style={styles.instead}>Don't have an account?</Text>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.replace(
+              mode == 'FARMER'
+                ? 'REGISTER_SCREEN-FARMER'
+                : 'REGISTER_SCREEN-CONSUMER',
+              {mode: null},
+            )
+          }>
           <Text style={styles.link}>Sign up</Text>
         </TouchableOpacity>
       </View>
@@ -145,7 +159,6 @@ const SocialButtons = ({provider, process, ...props}) => {
       />
       <Text
         style={{
-          fontWeight: '700',
           color: provider == 'GOOGLE' ? '#b63429' : '#3b5999',
         }}>
         {provider}
@@ -157,47 +170,3 @@ const SocialButtons = ({provider, process, ...props}) => {
     </Pressable>
   );
 };
-
-const styles = StyleSheet.create({
-  forgotPassword: {
-    width: '100%',
-    alignItems: 'flex-end',
-    marginBottom: 24,
-  },
-  row: {
-    flexDirection: 'row',
-    marginTop: 4,
-    alignItems: 'center',
-  },
-  forgot: {
-    fontSize: 13,
-    color: theme.colors.secondary,
-  },
-  link: {
-    color: theme.colors.primary,
-    fontSize: 16,
-    marginLeft: 10,
-  },
-  socialContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-  socialButton: {
-    width: 135,
-    height: 50,
-    borderColor: theme.colors.secondary,
-    borderWidth: 1,
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: 7,
-  },
-  socialIcon: {
-    height: 30,
-    width: 30,
-    resizeMode: 'contain',
-  },
-});

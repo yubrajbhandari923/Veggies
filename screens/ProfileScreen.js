@@ -3,15 +3,15 @@ import {
   Text,
   Pressable,
   ScrollView,
-  StyleSheet,
   Image,
   ImageBackground,
 } from 'react-native';
 import React, {useContext, useState} from 'react';
 import {AuthContext} from '../routes/AuthProvider';
-import {theme} from '../core/theme';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import Icon from 'react-native-vector-icons/AntDesign';
+import {ProfileScreenStyles as styles} from '../styles/ProfileStyles';
+
 export default function ProfileScreen() {
   const [isImageLoading, setImageLoading] = useState(true);
   const {logout, user} = useContext(AuthContext);
@@ -76,7 +76,7 @@ export default function ProfileScreen() {
             }}>
             <View>
               <Text style={styles.smallDetail}>Today's Sales</Text>
-              <Text style={styles.someStats}>रु 40</Text>
+              <Text style={styles.someStats}>NPR 40</Text>
             </View>
             <View>
               <Text style={styles.smallDetail}>Products Sold</Text>
@@ -88,7 +88,8 @@ export default function ProfileScreen() {
           <FunctionButtons title="SALES" icon="mail" />
           <FunctionButtons title="DISEASE DIAGNOSIS" icon="mail" />
           <FunctionButtons title="SOIL PH CHECK" icon="mail" />
-          <FunctionButtons title="FARM OVERVIEW" icon="mail" />
+          {/* <FunctionButtons title="FARM OVERVIEW" icon="mail" /> */}
+
           <FunctionButtons
             title="LOGOUT"
             icon="logout"
@@ -108,81 +109,3 @@ const FunctionButtons = ({title, icon, ...props}) => {
     </Pressable>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    height: '100%',
-  },
-  profileContainer: {
-    position: 'absolute',
-    alignSelf: 'center',
-    top: '20%',
-    height: 150,
-    width: 150,
-    backgroundColor: '#fff',
-    borderRadius: 60,
-    elevation: 1,
-    zIndex: 5,
-    overflow: 'hidden',
-  },
-  scrollContainer: {
-    marginTop: '60%',
-  },
-  scrollContent: {
-    // flex: 1,
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 40,
-    borderTopRightRadius: 40,
-    paddingTop: 80,
-    paddingHorizontal: 15,
-    // alignItems: 'center',
-  },
-  userImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  imageBackground: {
-    height: 350,
-    width: '100%',
-    position: 'absolute',
-  },
-  username: {
-    color: '#111',
-    fontFamily: theme.fonts.light.fontFamily,
-    fontSize: 25,
-    color: '#aaa',
-    alignSelf: 'center',
-    marginTop: 10,
-  },
-  phone: {
-    color: '#aaa',
-    width: '100%',
-    paddingVertical: 5,
-    flexDirection: 'row',
-  },
-  detailText: {
-    color: '#ccc',
-    marginLeft: 10,
-  },
-  someStats: {
-    fontFamily: theme.fonts.light.fontFamily,
-    fontSize: 25,
-    color: '#aaa',
-    textAlign: 'center',
-  },
-  functions: {paddingVertical: 15, flexDirection: 'row'},
-  functionText: {
-    fontFamily: theme.fonts.light.fontFamily,
-    fontSize: 16,
-    color: '#aaa',
-    marginLeft: 10,
-  },
-  smallDetail: {
-    fontSize: 10,
-    color: '#aaa',
-    marginBottom: 10,
-    fontFamily: theme.fonts.thin.fontFamily,
-  },
-});

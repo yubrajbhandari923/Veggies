@@ -1,19 +1,12 @@
 import React from 'react';
-import {Image, StyleSheet} from 'react-native';
+import {Image} from 'react-native';
+import {logoStyles as styles} from '../styles/globalStyles';
 
-export default function Logo() {
+export default function Logo({style}) {
   return (
     <Image
-      source={require('../assets/images/screens/background_dot.png')}
-      style={styles.image}
+      source={require('../assets/images/logo.png')}
+      style={{...styles.image, ...style}}
     />
   );
 }
-
-const styles = StyleSheet.create({
-  image: {
-    width: 110,
-    height: 110,
-    marginBottom: 8,
-  },
-});

@@ -1,5 +1,10 @@
 import React, {Component} from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
+import {
+  createStackNavigator,
+  CardStyleInterpolators,
+  TransitionPresets,
+  TransitionSpecs,
+} from '@react-navigation/stack';
 
 import {checkIfFirstAppUse} from '../helpers/first_Time_App_OpenCheck';
 import VeggiesLogoStartupScreen from '../screens/VeggiesLogoStartupScreen';
@@ -10,6 +15,7 @@ import LoginScreen from '../screens/LoginScreen';
 import OnBoardingScreen from '../screens/OnboardingScreen';
 import StartScreen from '../screens/StartScreen';
 import RegisterScreen from '../screens/RegisterScreen';
+import ForgotPassword from '../screens/ForgotPassword';
 
 export const Stack = createStackNavigator();
 
@@ -50,9 +56,43 @@ export default class AuthStack extends Component {
               component={OnBoardingScreen}
               name="ONBOARDING_SCREEN"
             />
+
             <Stack.Screen component={StartScreen} name="START_SCREEN" />
-            <Stack.Screen component={LoginScreen} name="LOGIN_SCREEN" />
-            <Stack.Screen component={RegisterScreen} name="REGISTER_SCREEN" />
+
+            {/* FARMERS */}
+            <Stack.Group
+              screenOptions={{
+                cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+              }}>
+              <Stack.Screen
+                component={LoginScreen}
+                name="LOGIN_SCREEN-FARMER"
+              />
+              <Stack.Screen
+                component={RegisterScreen}
+                name="REGISTER_SCREEN-FARMER"
+              />
+            </Stack.Group>
+
+            {/* CONSUMERS */}
+            <Stack.Group
+              screenOptions={{
+                ...TransitionPresets.ModalPresentationIOS,
+              }}>
+              <Stack.Screen
+                component={RegisterScreen}
+                name="REGISTER_SCREEN-CONSUMER"
+              />
+              <Stack.Screen
+                component={LoginScreen}
+                name="LOGIN_SCREEN-CONSUMER"
+              />
+            </Stack.Group>
+
+            <Stack.Screen
+              component={ForgotPassword}
+              name="FORGOT_PASSWORD_SCREEN"
+            />
           </Stack.Navigator>
         </Provider>
       );

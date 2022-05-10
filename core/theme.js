@@ -1,23 +1,44 @@
 import {DefaultTheme, configureFonts} from 'react-native-paper';
 
 const fontConfig = {
-  android: {
-    regular: {
-      fontFamily: 'Nunito-Medium',
-      fontWeight: 'normal',
-    },
-    medium: {
-      fontFamily: 'Nunito-Medium',
-      fontWeight: 'normal',
-    },
-    light: {
-      fontFamily: 'Nunito-Medium',
-      fontWeight: 'normal',
-    },
-    thin: {
-      fontFamily: 'Nunito-Medium',
-      fontWeight: 'normal',
-    },
+  regular: {
+    fontFamily: 'Poppins-Medium',
+    fontWeight: 'normal',
+  },
+  medium: {
+    fontFamily: 'Montserrat-Bold',
+    fontWeight: 'normal',
+  },
+  light: {
+    fontFamily: 'Montserrat-Regular',
+    fontWeight: 'normal',
+  },
+  thin: {
+    fontFamily: 'Montserrat-Regular',
+    fontWeight: 'normal',
+  },
+
+  family: {
+    bold1: 'Montserrat-Bold',
+    bold2: 'Poppins-Bold',
+
+    light1: 'Montserrat-Regular',
+    light2: 'Poppins-Regular',
+
+    medium1: 'Montserrat-Medium',
+    medium2: 'Poppins-Medium',
+  },
+
+  size: {
+    large: 27,
+
+    big: 20,
+
+    medium: 16,
+
+    regular: 14,
+
+    small: 12,
   },
 };
 
@@ -27,17 +48,28 @@ export const theme = {
   colors: {
     ...DefaultTheme.colors,
     surface: '#fff',
-    error: '#f13a59',
-    placeholder: '#45b182',
-    accent: 'blue',
-    disabled: 'red',
-    primary: '#45b182',
-    text: '#555',
+
+    text: '#444',
+
     background: '#fff',
-    secondary: '#00b386',
-    card: '#00b386',
-    onSurface: 'green',
-    notification: 'red',
+
+    placeholder: '#45b182',
+
+    primary: '#2bc48a',
+
+    secondary: '#ccc',
+
+    border: '#ccc',
+
+    white: '#fff',
+
+    grey: '#999',
+
+    error: '#772121',
+
+    success: '#297558',
+
+    errorText: '#f13a59',
   },
-  fonts: configureFonts(fontConfig),
+  fonts: fontConfig,
 };
