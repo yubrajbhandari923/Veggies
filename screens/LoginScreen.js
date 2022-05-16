@@ -81,19 +81,19 @@ export default function LoginScreen({navigation, route}) {
           process={whichProcessIsHappenningNow}
           onPress={() => {
             facebookLogin()
-              .then(user => {
-                setWhichProcessIsHappenningNow(null);
-                console.log(user);
-              })
-              .catch(e => {
-                setWhichProcessIsHappenningNow(null);
-                setMessage(
-                  true,
-                  true,
-                  e.code ? errorCodeBasedOnFrbCode(e.code) : "Couldn't Login",
-                );
-                if (__DEV__) console.log(e);
-              });
+              // .then(user => {
+              //   setWhichProcessIsHappenningNow(null);
+              //   console.log(user);
+              // })
+              // .catch(e => {
+              //   setWhichProcessIsHappenningNow(null);
+              //   setMessage(
+              //     true,
+              //     true,
+              //     e.code ? errorCodeBasedOnFrbCode(e.code) : "Couldn't Login",
+              //   );
+              //   if (__DEV__) console.log(e);
+              // });
           }}
         />
       </View>

@@ -193,8 +193,6 @@ export default class AuthProvider extends React.Component {
                 await firebase.auth().currentUser.getIdTokenResult(true)
               ).claims;
 
-              console.log(claim);
-
               // If the user was farmer but logged in from consumer screen
               if (this.state.mode == 'CONSUMER' && claim.admin) {
                 await googleSIGNOUT();
@@ -222,30 +220,75 @@ export default class AuthProvider extends React.Component {
             // Attempt login with permissions
 
             this.setState({whichProcessIsHappenningNow: 'LOGIN-FACEBOOK'});
-            this.setState({whichAuthentication: 'LOGIN'});
 
-            const result = await LoginManager.logInWithPermissions([
-              'public_profile',
-              'email',
-            ]);
+            // It will be set to login once everything gets validated
+            this.setState({whichAuthentication: 'REGISTER'});
 
-            if (result.isCancelled) {
-              throw 'User cancelled the login process';
+            try {
+              const result = await LoginManager.logInWithPermissions([
+                'public_profile',
+                'email',
+              ]);
+
+              if (result.isCancelled) {
+                throw 'User cancelled the login process';
+              }
+
+              const data = await AccessToken.getCurrentAccessToken();
+
+              if (!data) {
+                throw 'Something went wrong obtaining access token';
+              }
+
+              // Create a Firebase credential with the AccessToken
+              const facebookCredential =
+                firebase.auth.FacebookAuthProvider.credential(data.accessToken);
+
+              const user = await firebase
+                .auth()
+                .signInWithCredential(facebookCredential);
+
+              // If new user and farmer mode, then set that user to admin
+              if (
+                user.additionalUserInfo.isNewUser &&
+                this.state.mode == 'FARMER'
+              ) {
+                await this.setAdminClaim(user.user.uid);
+              }
+
+              const claim = (
+                await firebase.auth().currentUser.getIdTokenResult(true)
+              ).claims;
+
+              // If the user was farmer but logged in from consumer screen
+              if (this.state.mode == 'CONSUMER' && claim.admin) {
+                await firebase.auth().signOut();
+                throw {message: 'This account is registered as a farmer'};
+              }
+
+              // If the user was consumer but logged in from framer screen
+              if (this.state.mode == 'FARMER' && !claim.admin) {
+                await firebase.auth().signOut();
+                throw {message: 'This account is registered as a consumer'};
+              }
+
+              this.setState({whichAuthentication: 'LOGIN'});
+
+              this.setState({whichProcessIsHappenningNow: null});
+            } catch (e) {
+              console.log(e);
+              this.executeError(
+                e.message
+                  ? e.message
+                  : errorCodeBasedOnFrbCode(e?.code ? e.code : e),
+                e,
+                'facebook login fnx',
+              );
             }
 
             // Once signed in, get the users AccesToken
-            const data = await AccessToken.getCurrentAccessToken();
-
-            if (!data) {
-              throw 'Something went wrong obtaining access token';
-            }
-
-            // Create a Firebase credential with the AccessToken
-            const facebookCredential =
-              firebase.auth.FacebookAuthProvider.credential(data.accessToken);
 
             // Sign-in the user with the credential
-            return firebase.auth().signInWithCredential(facebookCredential);
           },
 
           // Register Account from Email
