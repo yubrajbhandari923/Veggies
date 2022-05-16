@@ -76,7 +76,7 @@ const Route = () => {
   useEffect(() => {
     AsyncStorage.getItem('mode')
       .then(md => {
-        if (!md) AsyncStorage.setItem('FARMER');
+        if (!md) AsyncStorage.setItem('mode', 'FARMER');
 
         setMode(md ? md : 'FARMER');
       })

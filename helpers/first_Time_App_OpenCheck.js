@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage';
 
-AsyncStorage.clear();
+// AsyncStorage.clear();
 // This function returns a Promise-- either true or false
 // usage ::-> const checkifFirstAppUse().then(value => JSON.parse(value))
 export const checkIfFirstAppUse = async () => {
