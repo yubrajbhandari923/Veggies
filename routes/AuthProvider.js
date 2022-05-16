@@ -133,28 +133,42 @@ export default class AuthProvider extends React.Component {
           // This function sets the message that will be displayed in snackbar
           setMessage: (e, v, m) => this.showMessage(e, v, m),
 
-          login: (email, password) => {
+          login: async (email, password) => {
             // First Let the Context know that email login is happenning
             this.setState({whichProcessIsHappenningNow: 'LOGIN-EMAIL'});
-            this.setState({whichAuthentication: 'LOGIN'});
+            this.setState({whichAuthentication: 'REGISTER'});
 
-            firebase
-              .auth()
-              .signInWithEmailAndPassword(email, password)
-              .then(record => {
-                // Now the login is complete, set the happenning proces
+            try {
+              const user = await firebase
+                .auth()
+                .signInWithEmailAndPassword(email, password);
 
-                console.log(record.user.uid);
+              const claim = (
+                await firebase.auth().currentUser.getIdTokenResult(true)
+              ).claims;
 
-                this.setState({whichProcessIsHappenningNow: null});
-              })
-              .catch(error =>
-                this.executeError(
-                  errorCodeBasedOnFrbCode(error.code),
-                  error,
-                  'Login Fnx - as Consumer',
-                ),
+              // If the user was farmer but logged in from consumer screen
+              if (this.state.mode == 'CONSUMER' && claim.admin) {
+                await firebase.auth().signOut();
+                throw 'This account is registered as a farmer';
+              }
+
+              // If the user was consumer but logged in from framer screen
+              if (this.state.mode == 'FARMER' && !claim.admin) {
+                await firebase.auth().signOut();
+                throw 'This account is registered as a consumer';
+              }
+
+              this.setState({whichAuthentication: 'LOGIN'});
+
+              this.setState({whichProcessIsHappenningNow: null});
+            } catch (e) {
+              this.executeError(
+                e?.code ? errorCodeBasedOnFrbCode(e.code) : e,
+                e,
+                'login fnx ',
               );
+            }
           },
 
           googleLogin: async () => {
