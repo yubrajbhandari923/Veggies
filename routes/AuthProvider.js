@@ -69,6 +69,7 @@ export default class AuthProvider extends React.Component {
 
   // To set the admin
   setAdminClaim = async uid => {
+    console.log(uid);
     try {
       const claim = await fetch(`${serverURL}/setadmin`, {
         method: 'POST', // or 'PUT'
@@ -158,18 +159,62 @@ export default class AuthProvider extends React.Component {
 
           googleLogin: async () => {
             this.setState({whichProcessIsHappenningNow: 'LOGIN-GOOGLE'});
-            this.setState({whichAuthentication: 'LOGIN'});
 
-            // Get the users ID token
+            // SET it to LOGIN when everything gets validated
+            this.setState({whichAuthentication: 'REGISTER'});
 
-            const {idToken} = await GoogleSignin.signIn();
+            const googleSIGNOUT = async () => {
+              await GoogleSignin.revokeAccess();
+              await GoogleSignin.signOut();
 
-            // Create a Google credential with the token
-            const googleCredential =
-              firebase.auth.GoogleAuthProvider.credential(idToken);
+              await firebase.auth().signOut();
+            };
+
+            try {
+              // Get the users ID token
+              const {idToken} = await GoogleSignin.signIn();
+              // Create a Google credential with the token
+              const googleCredential =
+                firebase.auth.GoogleAuthProvider.credential(idToken);
+
+              const user = await firebase
+                .auth()
+                .signInWithCredential(googleCredential);
+
+              // If new user and farmer mode, then set that user to admin
+              if (
+                user.additionalUserInfo.isNewUser &&
+                this.state.mode == 'FARMER'
+              ) {
+                await this.setAdminClaim(user.user.uid);
+              }
+
+              const claim = (
+                await firebase.auth().currentUser.getIdTokenResult(true)
+              ).claims;
+
+              console.log(claim);
+
+              // If the user was farmer but logged in from consumer screen
+              if (this.state.mode == 'CONSUMER' && claim.admin) {
+                await googleSIGNOUT();
+                throw {message: 'This account is registered as a farmer'};
+              }
+
+              // If the user was consumer but logged in from framer screen
+              if (this.state.mode == 'FARMER' && !claim.admin) {
+                await googleSIGNOUT();
+                throw {message: 'This account is registered as a consumer'};
+              }
+
+              this.setState({whichAuthentication: 'LOGIN'});
+
+              this.setState({whichProcessIsHappenningNow: null});
+            } catch (e) {
+              this.executeError(e.message, e, 'google Login Fnx: ');
+            }
 
             // Sign-in the user with the credential
-            return await firebase.auth().signInWithCredential(googleCredential);
           },
 
           // Facebook Login

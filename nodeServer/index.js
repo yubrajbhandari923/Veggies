@@ -6,7 +6,7 @@ const port = 3000;
 const credential = require('./data/firebasesecret.json');
 
 const cors = require('cors');
-let whitelist = ['http://127.0.0.1:3000', 'http://192.168.1.113:3000'];
+let whitelist = ['http://127.0.0.1:3000', 'http://192.168.1.113:3000','http://192.168.1.12:3000'];
 var corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {

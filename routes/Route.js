@@ -37,8 +37,9 @@ const Route = () => {
     Settings.initializeSDK();
   });
 
-  // Listen to the user authentication status
 
+  
+  // Listen to the user authentication status
   useEffect(() => {
     if (whichAuthentication == 'REGISTER') return;
     setLoading(true);
