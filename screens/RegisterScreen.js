@@ -52,7 +52,7 @@ export default function RegisterScreen({navigation}) {
         returnKeyType="next"
         value={name.value}
         onChangeText={text => setName({value: text, error: ''})}
-        error={!!name.error}
+        error={name.error}
         errorText={name.error}
       />
       <TextInput
@@ -60,7 +60,7 @@ export default function RegisterScreen({navigation}) {
         returnKeyType="next"
         value={email.value}
         onChangeText={text => setEmail({value: text, error: ''})}
-        error={!!email.error}
+        error={email.error}
         errorText={email.error}
         autoCapitalize="none"
         autoCompleteType="email"
@@ -72,7 +72,7 @@ export default function RegisterScreen({navigation}) {
         returnKeyType="done"
         value={password.value}
         onChangeText={text => setPassword({value: text, error: ''})}
-        error={!!password.error}
+        error={password.error}
         errorText={password.error}
         secureTextEntry
       />

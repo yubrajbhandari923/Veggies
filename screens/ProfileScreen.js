@@ -11,13 +11,22 @@ import {AuthContext} from '../routes/AuthProvider';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {ProfileScreenStyles as styles} from '../styles/ProfileStyles';
+import AntIcon from 'react-native-vector-icons/AntDesign';
 
-export default function ProfileScreen() {
+export default function ProfileScreen({navigation}) {
   const [isImageLoading, setImageLoading] = useState(true);
   const {logout, user} = useContext(AuthContext);
 
   return (
     <View style={{...styles.container, backgroundColor: '#42af7f66'}}>
+      <Pressable
+        style={styles.edit}
+        onPress={() => navigation.navigate('EDIT_PROFILE-MODAL')}>
+        <Text style={styles.editText}>
+          Edit Profile
+          <AntIcon name="edit" style={styles.editIcon} size={15} />
+        </Text>
+      </Pressable>
       {/*  */}
       <ImageBackground
         source={

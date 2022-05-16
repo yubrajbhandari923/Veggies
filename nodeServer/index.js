@@ -29,8 +29,14 @@ if (getApps().length == 0) {
 }
 
 // Signup API
-const signup = require('./setadmin');
-app.use('/setadmin', signup);
+const setAdminClaims = require('./setadmin');
+app.use('/setadmin', setAdminClaims);
+
+const updatePhone = require('./updatePhone');
+app.use('/updatePhone', updatePhone);
+
+const updateAddress = require('./updateAddress');
+app.use('/updateAddress', updateAddress);
 
 app.listen(port, () => {
   console.log(`Server running on http://127.0.0.1:${port}`);

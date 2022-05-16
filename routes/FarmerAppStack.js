@@ -8,6 +8,10 @@ import NotificationScreen from '../screens/NotificationScreen';
 import MessageScreen from '../screens/MessagesScreen';
 import ProductsScreen from '../screens/ProductsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import UsernameUpdate from '../components/modals/UsernameUpdate';
+import PhoneUpdate from '../components/modals/PhoneUpdate';
+import AddressUpdate from '../components/modals/AddressUpdate';
+import EmailVerify from '../components/modals/EmailVerify';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -15,6 +19,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntIcons from 'react-native-vector-icons/AntDesign';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import NewsModal from '../components/modals/NewsModal';
+import EditUser from '../screens/EditUser';
 
 export const Stack = createStackNavigator();
 
@@ -24,7 +29,7 @@ export default class FarmerAppStack extends Component {
     return (
       <Provider theme={theme}>
         <Stack.Navigator
-          initialRouteName="TAB"
+          initialRouteName="EDIT_PROFILE-MODAL"
           screenOptions={{
             headerShown: false,
           }}>
@@ -40,6 +45,23 @@ export default class FarmerAppStack extends Component {
               ...TransitionPresets.ModalPresentationIOS,
             }}>
             <Stack.Screen name="NEWS_FEED-MODAL" component={NewsModal} />
+            <Stack.Screen
+              name="USERNAME_UPDATE-MODAL"
+              component={UsernameUpdate}
+            />
+            <Stack.Screen name="PHONE_UPDATE-MODAL" component={PhoneUpdate} />
+            <Stack.Screen
+              name="ADDRESS_UPDATE-MODAL"
+              component={AddressUpdate}
+            />
+            <Stack.Screen name="EMAIL_VERIFY-MODAL" component={EmailVerify} />
+          </Stack.Group>
+
+          <Stack.Group
+            screenOptions={{
+              ...TransitionPresets.ModalPresentationIOS,
+            }}>
+            <Stack.Screen name="EDIT_PROFILE-MODAL" component={EditUser} />
           </Stack.Group>
         </Stack.Navigator>
       </Provider>

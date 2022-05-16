@@ -77,8 +77,8 @@ export const inputStyles = StyleSheet.create({
   },
   input: {
     backgroundColor: theme.colors.surface,
-    borderColor:theme.colors.primary,
-    fontFamily:theme.fonts.family.bold1
+    borderColor: theme.colors.primary,
+    fontFamily: theme.fonts.family.bold1, 
   },
   description: {
     fontSize: 13,
@@ -89,5 +89,42 @@ export const inputStyles = StyleSheet.create({
     fontSize: 13,
     color: theme.colors.errorText,
     paddingTop: 8,
+  },
+  initialContainer: {
+    alignItems: 'center',
+    // height: '100%',
+    // justifyContent: 'center',
+    // paddingHorizontal: 5,
+    backgroundColor: 'green',
+    width: 100,
+    height: '100%',
+    alignSelf: 'flex-start',
+  },
+  initialText: {
+    color: '#ccc',
+    fontSize: theme.fonts.size.medium,
+    fontFamily: theme.fonts.family.bold1,
+  },
+});
+
+export const HeaderBackButtonStyles = StyleSheet.create({
+  container: {
+    height: 50,
+    width: '100%',
+    justifyContent: 'center',
+  },
+  button: {
+    flexDirection: 'row',
+    padding: 10,
+    alignItems: 'center',
+  },
+  icon: {
+    color: theme.colors.primary,
+  },
+  text: {
+    marginLeft: 3,
+    color: theme.colors.primary,
+    fontFamily: theme.fonts.family.light2,
+    fontSize: theme.fonts.size.regular,
   },
 });

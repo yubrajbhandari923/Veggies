@@ -1,6 +1,6 @@
 import React, {createContext} from 'react';
 // import * as auth from 'firebase/auth';
-import firebase, {auth} from '../firebase';
+import firebase from '../firebase';
 export const AuthContext = createContext();
 import {errorCodeBasedOnFrbCode} from '../helpers/firebaseErrorCodesMessage';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
@@ -8,6 +8,14 @@ import {AccessToken, LoginManager} from 'react-native-fbsdk-next';
 import {NavigationRef} from './Route';
 import {sendPasswordResetEmail} from 'firebase/auth';
 import {serverURL} from '../data/locations';
+import {launchImageLibrary} from 'react-native-image-picker';
+import {getStorage, ref, uploadBytes, getDownloadURL} from 'firebase/storage';
+import Geolocation from '@react-native-community/geolocation';
+
+Geolocation.setRNConfiguration({
+  authorizationLevel: 'whenInUse',
+  // skipPermissionRequests: false,
+});
 
 function navigate(name, params) {
   if (NavigationRef.isReady()) {
@@ -40,6 +48,9 @@ export default class AuthProvider extends React.Component {
         visible: false,
         message: null,
       },
+
+      // Store the current location cordaintes
+      coordinates: {coords: null, error: null},
     };
   }
 
@@ -53,9 +64,47 @@ export default class AuthProvider extends React.Component {
 
     this.showMessage(true, true, error);
 
-    if (__DEV__) console.log('From ' + origin + ':' + rawError);
+  // To set the admin
+  setAdminClaim = async uid => {
+    try {
+      const claim = await fetch(`${serverURL}/setadmin`, {
+        method: 'POST', // or 'PUT'
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          uid: uid,
+        }),
+      });
+
+      const res = await claim.json();
+
+      if (!res.ok) throw res;
+
+      return res;
+    } catch (e) {
+      return e;
+    }
   };
 
+  // To get location as coordinates
+  setGeoLocationCoordinates = async () => {
+    let coordinate;
+    const geo = Geolocation.getCurrentPosition(
+      position => {
+        this.setState({coordinates: {coords: position.coords, error: null}});
+      },
+      error => {
+        // See error code charts below.
+        this.setState({coords: null, error: error.message});
+      },
+    );
+  };
+
+  // When the component mounts then set the geoLocation
+  componentDidMount() {
+    this.setGeoLocationCoordinates();
+  }
   // This Function is used to display message
   render() {
     return (
@@ -285,6 +334,172 @@ export default class AuthProvider extends React.Component {
 
                 this.showMessage(true, true, e.message);
               });
+          },
+
+          // Upload New Profile Picture
+          uploadPP: async () => {
+            this.setState({whichProcessIsHappenningNow: 'UPLOAD-PROFILE_PIC'});
+            try {
+              const image = await launchImageLibrary({
+                maxHeight: 500,
+                maxWidth: 500,
+                mediaType: 'photo',
+              });
+
+              if (image?.didCancel) throw 'User cancelled the upload';
+
+              if (image?.errorMessage) throw image.errorMessage;
+              //
+
+              // Convert url to File Object
+              const resp = await fetch(image.assets[0].uri);
+              const blob = await resp.blob();
+              const file = new File([blob], 'profile_pic.jpg', {
+                type: blob.type,
+              });
+
+              const ext = image.assets[0].fileName.substring(
+                image.assets[0].fileName.lastIndexOf('.') + 1,
+                image.assets[0].fileName.length,
+              );
+
+              // const storage = getStorage();
+
+              const storage = getStorage();
+
+              const storageRef = ref(
+                storage,
+                `profilePicture/profilePic-${this.state.user['uid']}.${ext}`,
+              );
+
+              const metadata = {
+                contentType: 'image/jpeg',
+              };
+              const uploadTask = await uploadBytes(storageRef, file, metadata);
+
+              const url = await getDownloadURL(uploadTask.ref);
+
+              await firebase.auth().currentUser.updateProfile({photoURL: url});
+
+              this.setState({whichProcessIsHappenningNow: null});
+
+              this.showMessage(
+                false,
+                true,
+                'Profile Picture Successfully Updated',
+              );
+            } catch (error) {
+              this.executeError(e, e, 'Upload PP Fnx');
+            }
+          },
+
+          // Update UserName
+
+          updateUsername: async username => {
+            this.setState({whichProcessIsHappenningNow: 'UPDATE-USERNAME'});
+
+            try {
+              await firebase.auth().currentUser.updateProfile({
+                displayName: username,
+              });
+
+              this.showMessage(false, true, 'Successfully updated username');
+              this.setState({whichProcessIsHappenningNow: null});
+              navigate('EDIT_PROFILE-MODAL');
+            } catch (error) {
+              this.executeError(
+                errorCodeBasedOnFrbCode(error.code),
+                error,
+                'Update Username Fnx',
+              );
+            }
+          },
+
+          updatePhone: async phone => {
+            phone = '+977' + phone;
+
+            this.setState({whichProcessIsHappenningNow: 'UPDATE-PHONE'});
+
+            try {
+              const response = await fetch(`${serverURL}/updatePhone`, {
+                body: JSON.stringify({uid: this.state.user.uid, phone: phone}),
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              });
+
+              const json = await response.json();
+              if (!response.ok) throw json;
+
+              this.setState({whichProcessIsHappenningNow: null});
+              this.showMessage(
+                false,
+                true,
+                'Successfully updated phone number',
+              );
+              navigate('EDIT_PROFILE-MODAL');
+            } catch (error) {
+              this.executeError(
+                errorCodeBasedOnFrbCode(error?.code),
+                error,
+                'Update Phone Fnx',
+              );
+            }
+          },
+
+          updateAddress: async address => {
+            this.setState({whichProcessIsHappenningNow: 'UPDATE-ADDRESS'});
+
+            try {
+              address['uid'] = this.state.user.uid;
+
+              address['geoLocation'] = this.state.coordinates;
+
+              const response = await fetch(`${serverURL}/updateAddress`, {
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(address),
+                method: 'POST',
+              });
+
+              const json = await response.json();
+
+              if (!response.ok) throw json;
+
+              this.setState({whichProcessIsHappenningNow: null});
+              this.showMessage(false, true, 'Successfully updated address');
+              navigate('EDIT_PROFILE-MODAL');
+            } catch (error) {
+              this.executeError(
+                errorCodeBasedOnFrbCode(error.code),
+                error,
+                'Update Address FNX',
+              );
+            }
+          },
+
+          verifyMail: async () => {
+            this.setState({whichProcessIsHappenningNow: 'VERIFY-EMAIL'});
+            try {
+              await firebase.auth().currentUser.sendEmailVerification();
+
+              this.setState({whichProcessIsHappenningNow: null});
+
+              this.showMessage(
+                false,
+                true,
+                'Successfully sent verification email',
+              );
+              navigate('EDIT_PROFILE-MODAL');
+            } catch (error) {
+              this.executeError(
+                errorCodeBasedOnFrbCode(error?.code),
+                error,
+                'Verify Mail FNX',
+              );
+            }
           },
         }}>
         {this.props.children}
