@@ -47,8 +47,8 @@ export default function OnBoardingScreen({navigation, ...props}) {
   const styles = onboardstyle(colors);
   return (
     <Onboarding
-      onSkip={() => navigation.replace('LOGIN_SCREEN')}
-      onDone={() => navigation.replace('LOGIN_SCREEN')}
+      onSkip={() => navigation.replace('START_SCREEN')}
+      onDone={() => navigation.replace('START_SCREEN')}
       NextButtonComponent={() => null}
       SkipButtonComponent={props => <SkipButton styles={styles} {...props} />}
       DoneButtonComponent={props => <DoneButton styles={styles} {...props} />}
