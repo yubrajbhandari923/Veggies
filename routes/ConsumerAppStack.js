@@ -1,13 +1,23 @@
 import React, {Component} from 'react';
+
 import {Provider} from 'react-native-paper';
 import {theme} from '../core/theme';
 //
+import HomeScreen from '../screens/HomeScreen';
+import NotificationScreen from '../screens/NotificationScreen';
+import MessageScreen from '../screens/MessagesScreen';
+import ProductsScreen from '../screens/ProductsScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntIcons from 'react-native-vector-icons/AntDesign';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
-import Home from '../screens/consumer/Home';
+import NewsModal from '../components/modals/NewsModal';
 
 export const Stack = createStackNavigator();
+
 const Tab = createBottomTabNavigator();
 export default class FarmerAppStack extends Component {
   render() {
@@ -29,7 +39,7 @@ export default class FarmerAppStack extends Component {
               gestureEnabled: true,
               ...TransitionPresets.ModalPresentationIOS,
             }}>
-            {/* Modals Here */}
+            <Stack.Screen name="NEWS_FEED-MODAL" component={NewsModal} />
           </Stack.Group>
         </Stack.Navigator>
       </Provider>
@@ -57,11 +67,55 @@ const TabNavigator = () => {
         },
       }}>
       <Tab.Screen
-        component={Home}
-        name="HOME-SCREEN"
+        component={NotificationScreen}
+        name="NOTIFICATION-SCREEN"
+        options={{
+          tabBarIcon: ({color, size}) => (
+            <Ionicons
+              name="md-notifications-outline"
+              color={color}
+              size={size}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        component={MessageScreen}
+        name="MESSAGE-SCREEN"
         options={{
           tabBarIcon: ({color, size}) => (
             <AntIcons name="message1" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        component={HomeScreen}
+        name="HOME-SCREEN"
+        options={{
+          tabBarIcon: ({color, size}) => (
+            <AntIcons name="home" color={color} size={35} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        component={ProductsScreen}
+        name="PRODUCT-SCREEN"
+        options={{
+          tabBarIcon: ({color, size}) => (
+            <MaterialCommunityIcons
+              name="palm-tree"
+              color={color}
+              size={size}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        component={ProfileScreen}
+        name="PROFILE-SCREEN"
+        options={{
+          tabBarIcon: ({color, size}) => (
+            <AntIcons name="user" color={color} size={size} />
           ),
         }}
       />

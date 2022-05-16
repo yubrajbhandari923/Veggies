@@ -15,8 +15,7 @@ router.post('/', async (req, res, next) => {
   await getAuth()
     .setCustomUserClaims(uid, {admin: true})
     .then(v => {
-      console.log(`Set ${uid} to admin`);
-      res.json({success: true});
+      console.log(`User set to admin`);
     })
     .catch(err => {
       res.status(500);

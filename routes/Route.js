@@ -1,6 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
 import AuthStack from './AuthStack';
-import ConsumerAppStack from './ConsumerAppStack';
 import FarmerAppStack from './FarmerAppStack';
 import {
   NavigationContainer,
@@ -22,14 +21,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 // For white background across the App
 
 const Route = () => {
-  const {
-    user,
-    setUser,
-    whichAuthentication,
-    setMode,
-    mode,
-    whichProcessIsHappenningNow,
-  } = useContext(AuthContext);
+  const {user, setUser, whichAuthentication, setMode, mode} =
+    useContext(AuthContext);
   const [isLoading, setLoading] = useState(true);
 
   // Configure Google Singin and FB LOGIN When Component Mounts
@@ -91,7 +84,7 @@ const Route = () => {
           <AuthStack />
         )
       ) : user && whichAuthentication == 'LOGIN' ? (
-        <ConsumerAppStack />
+        <FarmerAppStack />
       ) : (
         <AuthStack />
       )}

@@ -21,8 +21,6 @@ export default function HomeScreen({navigation}) {
     setQuery(query);
   };
 
-  let controller = new AbortController();
-  let signal = controller.signal;
   const fetchNews = () => {
     let url =
       'https://newsapi.org/v2/everything?' +
@@ -34,7 +32,6 @@ export default function HomeScreen({navigation}) {
     var req = new Request(url);
     fetch(req, {
       method: 'GET',
-      signal,
     })
       .then(function (response) {
         if (!response.ok) {
@@ -54,8 +51,6 @@ export default function HomeScreen({navigation}) {
 
   useEffect(() => {
     fetchNews();
-    // Abort fetch when component unmounts
-    return () => controller.abort();
   }, []);
 
   useEffect(() => {
