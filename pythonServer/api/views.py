@@ -38,52 +38,52 @@ class WebHookView(View):
                 #     and wit_greeting.get("value") == True
                 #     and wit_greeting.get("confidence") >= 0.9
                 # ):
-                    # res["message"]["attachment"] = {
-                    #     "type": "template",
-                    #     "payload": {
-                    #         "template_type": "generic",
-                    #         "elements": [
-                    #             {
-                    #                 "title": "Welcome to Veggies Market",
-                    #                 "subtitle": "Connect with generic farmers in your locality.",
-                    #                 "image_url": f"{APP_URL}/static/img/welcome.jpg",
-                    #                 "buttons": [
-                    #                     {
-                    #                         "type": "postback",
-                    #                         "title": "Yes",
-                    #                         "payload": "yes",
-                    #                     }
-                    #                 ],
-                    #             }
-                    #         ],
-                    #     },
-                    # }
+                # res["message"]["attachment"] = {
+                #     "type": "template",
+                #     "payload": {
+                #         "template_type": "generic",
+                #         "elements": [
+                #             {
+                #                 "title": "Welcome to Veggies Market",
+                #                 "subtitle": "Connect with generic farmers in your locality.",
+                #                 "image_url": f"{APP_URL}/static/img/welcome.jpg",
+                #                 "buttons": [
+                #                     {
+                #                         "type": "postback",
+                #                         "title": "Yes",
+                #                         "payload": "yes",
+                #                     }
+                #                 ],
+                #             }
+                #         ],
+                #     },
+                # }
                 print("\n\n Hellooooooooooooooooooo \n\n\n")
                 res["message"]["attachment"] = {
-                        "type": "template",
-                        "payload": {
-                            "template_type": "generic",
-                            "elements": [
-                                {
-                                    "title": "Is this the right picture?",
-                                    "subtitle": "Tap a button to answer.",
-                                    "image_url": f"{APP_URL}/static/img/welcome.jpg",
-                                    "buttons": [
-                                        {
-                                            "type": "postback",
-                                            "title": "Yes!",
-                                            "payload": "yes",
-                                        },
-                                        {
-                                            "type": "postback",
-                                            "title": "No!",
-                                            "payload": "no",
-                                        },
-                                    ],
-                                }
-                            ],
-                        },
-                    }
+                    "type": "template",
+                    "payload": {
+                        "template_type": "generic",
+                        "elements": [
+                            {
+                                "title": "Is this the right picture?",
+                                "subtitle": "Tap a button to answer.",
+                                "image_url": f"{APP_URL}/static/img/welcome.jpg",
+                                "buttons": [
+                                    {
+                                        "type": "postback",
+                                        "title": "Yes!",
+                                        "payload": "yes",
+                                    },
+                                    {
+                                        "type": "postback",
+                                        "title": "No!",
+                                        "payload": "no",
+                                    },
+                                ],
+                            }
+                        ],
+                    },
+                }
             except Exception:
                 res["message"]["text"] = "You are a nice lady "
 
@@ -101,7 +101,7 @@ class WebHookView(View):
                         {
                             "title": "Is this the right picture?",
                             "subtitle": "Tap a button to answer.",
-                            "image_url":f"{APP_URL}/static/img/welcome.jpg",
+                            "image_url": f"{APP_URL}/static/img/welcome.jpg",
                             "buttons": [
                                 {
                                     "type": "postback",
@@ -133,121 +133,196 @@ class WebHookView(View):
         payload = recieved_postback["payload"]
 
         # if payload == "CONTI":
-            # callSendAPI(reqBody)
+        # callSendAPI(reqBody)
 
-        if payload == "GET_STARTED" :
+        if payload == "GET_STARTED":
             res["message"]["attachment"] = {
                 "type": "template",
-                "payload" : get_started_payload
+                "payload": get_started_payload,
             }
             response = callSendAPI(res)
             print(f"\nHandle Postback\n {response.status_code} : {response.text} ")
 
-            res1 ={
-                 "messaging_type": "RESPONSE",
+            res1 = {
+                "messaging_type": "RESPONSE",
                 "recipient": {"id": str(sender_psid)},
-            "message" : {}
-
+                "message": {},
             }
-            res1["message"]["text"] = "Here you can order Vegetables from farmers nearby you."
+            res1["message"][
+                "text"
+            ] = "Here you can order Vegetables from farmers nearby you."
             response = callSendAPI(res1)
 
-            res2 ={
-                            "messaging_type": "RESPONSE",
-            "recipient": {"id": str(sender_psid)},
-            "message" : {}
-
+            res2 = {
+                "messaging_type": "RESPONSE",
+                "recipient": {"id": str(sender_psid)},
+                "message": {},
             }
             res2["message"]["attachment"] = {
-                "type" : "template",
+                "type": "template",
                 "payload": {
-                    "template_type" : "generic",
-                    "elements": [{
-                        "title" : "Cabbage",
-                        "image_url" : f"{APP_URL}/static/img/cabbage.jpg",
-                        "buttons" : [
-                            {
-                                "type":"postback",
-                                "title": "Order",
-                                "payload": "ORDER_CABBAGE",
-                            }
-                        ]  
-                    },{
-                        "title" : "Potatoes",
-                        "image_url" : f"{APP_URL}/static/img/potato.jpg",
-                        "buttons" : [
-                            {
-                                "type":"postback",
-                                "title": "Order",
-                                "payload": "ORDER_POTATO",
-                            }
-                        ]  
-                    },{
-                        "title" : "Beans",
-                        "image_url" : f"{APP_URL}/static/img/beans.jpg",
-                        "buttons" : [
-                            {
-                                "type":"postback",
-                                "title": "Order",
-                                "payload": "ORDER_BEANS",
-                            }
-                        ]  
-                    },{
-                        "title" : "Egg Plant",
-                        "image_url" : f"{APP_URL}/static/img/eggplant.jpg",
-                        "buttons" : [
-                            {
-                                "type":"postback",
-                                "title": "Order",
-                                "payload": "ORDER_EGGPLANT",
-                            }
-                        ]  
-                    }]
-                }
+                    "template_type": "generic",
+                    "elements": [
+                        {
+                            "title": "Cabbage",
+                            "image_url": f"{APP_URL}/static/img/cabbage.jpg",
+                            "buttons": [
+                                {
+                                    "type": "postback",
+                                    "title": "Order",
+                                    "payload": "ORDER_CABBAGE",
+                                }
+                            ],
+                        },
+                        {
+                            "title": "Potatoes",
+                            "image_url": f"{APP_URL}/static/img/potato.jpg",
+                            "buttons": [
+                                {
+                                    "type": "postback",
+                                    "title": "Order",
+                                    "payload": "ORDER_POTATO",
+                                }
+                            ],
+                        },
+                        {
+                            "title": "Beans",
+                            "image_url": f"{APP_URL}/static/img/beans.jpg",
+                            "buttons": [
+                                {
+                                    "type": "postback",
+                                    "title": "Order",
+                                    "payload": "ORDER_BEANS",
+                                }
+                            ],
+                        },
+                        {
+                            "title": "Egg Plant",
+                            "image_url": f"{APP_URL}/static/img/eggplant.jpg",
+                            "buttons": [
+                                {
+                                    "type": "postback",
+                                    "title": "Order",
+                                    "payload": "ORDER_EGGPLANT",
+                                }
+                            ],
+                        },
+                    ],
+                },
             }
 
             response = callSendAPI(res2)
-        
-        if payload[:5] == "ORDER":
-            res3 = {
-                            "messaging_type": "RESPONSE",
-            "recipient": {"id": str(sender_psid)},
-            "message" : {}
+            return
 
+        if payload == "ORDER_BEANS":
+            res3 = {
+                "messaging_type": "RESPONSE",
+                "recipient": {"id": str(sender_psid)},
+                "message": {},
             }
-            res3["message"]["attachments"] = {
+            res3["message"]["attachment"] = {
                 "type": "template",
-                "payload" : {
-                    "template_type": "button",
-                    "text": "Please Select your Location: ",
+                "payload": {
+                    "template_type": "generic",
+                    "title": "Please Select your Location: ",
                     "buttons": [
-                        {"type": "postback", "title": "Kathmandu","payload": "LIST_FARMERS1"},
-                        {"type": "postback", "title": "Banglore","payload": "LIST_FARMERS2"},
-                        {"type": "postback", "title": "Butwal","payload": "LIST_FARMERS3"},
-                        {"type": "postback", "title": "Mustang","payload": "LIST_FARMERS4"},
-                    ]
-                }
+                        {
+                            "type": "postback",
+                            "title": "Kathmandu",
+                            "payload": "LIST_FARMERS1",
+                        },
+                        {
+                            "type": "postback",
+                            "title": "Banglore",
+                            "payload": "LIST_FARMERS2",
+                        },
+                        {
+                            "type": "postback",
+                            "title": "Butwal",
+                            "payload": "LIST_FARMERS3",
+                        },
+                        {
+                            "type": "postback",
+                            "title": "Mustang",
+                            "payload": "LIST_FARMERS4",
+                        },
+                    ],
+                },
             }
 
             response = callSendAPI(res3)
-        
-        if payload == "LIST_FARMERS":
-            res["message"]["text"] = ""
-            res["message"]["attachments"] = {
+            print(response.text)
+            return
+
+        if payload == "LIST_FARMERS1":
+            res4 = {
+                "messaging_type": "RESPONSE",
+                "recipient": {"id": str(sender_psid)},
+                "message": {},
+            }
+            res4["message"]["attachment"] = {
                 "type": "template",
-                "payload" : {
-                    "template_type" : "generic",
-                    "elements": [{
-                        "title": "Farmer 1",
-                        "subtitle": "Price: Rs100/kg"
-                        ""
-                    }]
-                }
+                "payload": {
+                    "template_type": "generic",
+                    "elements": [
+                        {
+                            "title": "Farmer 1",
+                            "subtitle": "Price: Rs100/kg",
+                            "image_url": f"{APP_URL}/static/img/farmer1.jpg",
+                            "buttons": [
+                                {
+                                    "type": "postback",
+                                    "title": "Connect",
+                                    "payload": "CONNECT_TO_FARMER1",
+                                },
+                                {
+                                    "type": "postback",
+                                    "title": "Order Now",
+                                    "payload": "ORDER_NOW",
+                                },
+                            ],
+                        },
+                        {
+                            "title": "Farmer 2",
+                            "subtitle": "Price: Rs110/kg",
+                            "image_url": f"{APP_URL}/static/img/farmer2.jpg",
+                            "buttons": [
+                                {
+                                    "type": "postback",
+                                    "title": "Connect",
+                                    "payload": "CONNECT_TO_FARMER2",
+                                },
+                                {
+                                    "type": "postback",
+                                    "title": "Order Now",
+                                    "payload": "ORDER_NOW",
+                                },
+                            ],
+                        },
+                        {
+                            "title": "Farmer 3",
+                            "subtitle": "Price: Rs90/kg",
+                            "image_url": f"{APP_URL}/static/img/farmer3.jpg",
+                            "buttons": [
+                                {
+                                    "type": "postback",
+                                    "title": "Connect",
+                                    "payload": "CONNECT_TO_FARMER3",
+                                },
+                                {
+                                    "type": "postback",
+                                    "title": "Order Now",
+                                    "payload": "ORDER_NOW",
+                                },
+                            ],
+                        },
+                    ],
+                },
             }
 
-    def callSendAPI(self, sender_psid, response):
-        pass
-
+        response = callSendAPI(res4)
+        return 
+        
     def get(self, req, format=None):
         """Verify our webhook."""
 
