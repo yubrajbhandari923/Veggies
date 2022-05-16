@@ -19,7 +19,7 @@ import NewsModal from '../components/modals/NewsModal';
 export const Stack = createStackNavigator();
 
 const Tab = createBottomTabNavigator();
-export default class FarmerAppStack extends Component {
+export default class ConsumerAppStack extends Component {
   render() {
     return (
       <Provider theme={theme}>

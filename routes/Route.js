@@ -1,6 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import AuthStack from './AuthStack';
 import FarmerAppStack from './FarmerAppStack';
+import ConsumerAppStack from './ConsumerAppStack';
 import {
   NavigationContainer,
   createNavigationContainerRef,
@@ -37,8 +38,6 @@ const Route = () => {
     Settings.initializeSDK();
   });
 
-
-  
   // Listen to the user authentication status
   useEffect(() => {
     if (whichAuthentication == 'REGISTER') return;
@@ -97,7 +96,7 @@ const Route = () => {
           <AuthStack />
         )
       ) : user && whichAuthentication == 'LOGIN' ? (
-        <FarmerAppStack />
+        <ConsumerAppStack />
       ) : (
         <AuthStack />
       )}
