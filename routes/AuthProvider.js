@@ -63,6 +63,7 @@ export default class AuthProvider extends React.Component {
     this.setState({whichProcessIsHappenningNow: null});
 
     this.showMessage(true, true, error);
+  };
 
   // To set the admin
   setAdminClaim = async uid => {
