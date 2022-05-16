@@ -67,46 +67,11 @@ const TabNavigator = () => {
         },
       }}>
       <Tab.Screen
-        component={NotificationScreen}
-        name="NOTIFICATION-SCREEN"
-        options={{
-          tabBarIcon: ({color, size}) => (
-            <Ionicons
-              name="md-notifications-outline"
-              color={color}
-              size={size}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        component={MessageScreen}
-        name="MESSAGE-SCREEN"
-        options={{
-          tabBarIcon: ({color, size}) => (
-            <AntIcons name="message1" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tab.Screen
         component={HomeScreen}
         name="HOME-SCREEN"
         options={{
           tabBarIcon: ({color, size}) => (
             <AntIcons name="home" color={color} size={35} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        component={ProductsScreen}
-        name="PRODUCT-SCREEN"
-        options={{
-          tabBarIcon: ({color, size}) => (
-            <MaterialCommunityIcons
-              name="palm-tree"
-              color={color}
-              size={size}
-            />
           ),
         }}
       />

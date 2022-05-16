@@ -32,6 +32,9 @@ if (getApps().length == 0) {
 const setAdminClaims = require('./setadmin');
 app.use('/setadmin', setAdminClaims);
 
+const createAdmin = require('./createAdmin');
+app.use('/createAdmin', createAdmin);
+
 const updatePhone = require('./updatePhone');
 app.use('/updatePhone', updatePhone);
 

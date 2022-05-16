@@ -63,6 +63,8 @@ export default class AuthProvider extends React.Component {
     this.setState({whichProcessIsHappenningNow: null});
 
     this.showMessage(true, true, error);
+
+    if (__DEV__) console.log('From ' + origin + ':' + rawError);
   };
 
   // To set the admin
@@ -202,60 +204,67 @@ export default class AuthProvider extends React.Component {
           },
 
           // Register Account from Email
-          register: (username, email, password) => {
+          register: async (username, email, password) => {
             this.setState({whichProcessIsHappenningNow: 'REGISTER-EMAIL'});
+
             this.setState({whichAuthentication: 'REGISTER'});
 
-            // First create account and then update username
+            // Set admin claims for farmer
+            try {
+              if (this.state.mode == 'FARMER') {
+                //
+                const response = await fetch(`${serverURL}/createAdmin`, {
+                  method: 'POST', // or 'PUT'
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    email: email,
+                    password: password,
+                    name: username,
+                  }),
+                });
 
-            firebase
-              .auth()
-              .createUserWithEmailAndPassword(email, password)
-              .then(userAccount => {
-                firebase.auth().currentUser.updateProfile({
+                const json = await response.json();
+                if (!response.ok) throw json;
+
+                // Successfully sign up
+
+                this.setState({whichProcessIsHappenningNow: null});
+                this.showMessage(false, true, 'Successfully created account');
+                navigate('LOGIN_SCREEN-FARMER');
+              } else {
+                // For consumers
+                // First create account and then update username
+
+                await firebase
+                  .auth()
+                  .createUserWithEmailAndPassword(email, password);
+
+                // Updated username
+                await firebase.auth().currentUser.updateProfile({
                   displayName: username,
                 });
 
-                // Set admin claims for farmer
-                if (this.state.mode == 'FARMER') {
-                  //
-                  fetch(`${serverURL}/setadmin`, {
-                    method: 'POST', // or 'PUT'
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                      uid: userAccount.user.uid,
-                    }),
-                  })
-                    .then(res => {
-                      return res.json().then(json => {
-                        if (res.ok) {
-                          return Promise.resolve(json);
-                        }
-                        return Promise.reject(json);
-                      });
-                    })
+                // Now deauthenticate the user
+                await firebase.auth().signOut();
 
-                    .catch(e => e);
-                }
-              })
-              .then(() => firebase.auth().signOut())
-              .then(() => {
-                this.showMessage(false, true, 'Successfully created account');
                 this.setState({whichProcessIsHappenningNow: null});
-                navigate('LOGIN_SCREEN');
-              })
+                this.showMessage(
+                  false,
+                  true,
+                  'Successfully created the account',
+                );
 
-              .catch(e =>
-                this.executeError(
-                  errorCodeBasedOnFrbCode(e.code),
-                  e,
-                  'Register Fnx - Consumer',
-                ),
+                navigate('LOGIN_SCREEN-CONSUMER');
+              }
+            } catch (error) {
+              this.executeError(
+                errorCodeBasedOnFrbCode(error.code),
+                error,
+                'Register Fnx',
               );
-
-            // Login as Farmer
+            }
           },
           // LOGOUT function
           updateUserName: async username => {
